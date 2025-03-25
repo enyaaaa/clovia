@@ -9,7 +9,7 @@
   --hoockers-green: hsl(148, 20%, 38%);
   --spanish-gray: hsl(0, 0%, 61%);
   --light-gray: hsl(0, 0%, 80%);
-  --cultured-1: hsl(0, 0%, 97%);
+  --cultured-1: hsl(0, 0%, 97%); 
   --cultured-2: hsl(60, 6%, 93%);
   --white-web: hsl(0, 0%, 100%);
   --gray-web: hsl(0, 0%, 49%);
@@ -142,7 +142,7 @@ html {
 }
 
 body {
-  background-color: var(--white);
+  /* background-color: var(--white); */
   color: var(--gray-web);
   font-size: 1.6rem;
   font-weight: var(--fw-500);
@@ -863,12 +863,13 @@ body {
           #LOGIN STYLES
         \*-----------------------------------*/
 
+
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--cultured-1);
 }
 
 .login-form {
@@ -928,13 +929,21 @@ body {
 /*-----------------------------------*\
           #SIGNUP STYLES
         \*-----------------------------------*/
+.signup-body{
+   background-image: url('../images/register_bg.jpg');
+   background-size: cover; /* Ensures the background image covers the whole element */
+   background-position: center; /* Centers the image */
+   background-repeat: no-repeat; /* Prevents the image from repeating */
+}
 
+        
 .signup-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--cultured-1);
+  /* background-color: var(--cultured-1); */
+ 
 }
 
 .signup-form {
