@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clovia</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
+
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- Google Fonts Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body id="top">
+
+    <!-- HEADER -->
+    <header class="header" data-header>
+        <div w3-include-html="./assets/components/alert.html"></div>
+        <div w3-include-html="./assets/components/topnav.html"></div>
+    </header>
+
+    <!-- MOBILE NAVBAR -->
+    <div class="sidebar">
+        <div w3-include-html="./assets/components/sidenav.html"></div>
+        <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+
+    <main>
+        <article>
+
+            <!-- SHOP -->
+            <section class="section shop" id="shop" aria-label="shop" data-section>
+                <div class="container">
+                    <div class="title-wrapper">
+                        <h2 class="h2 section-title">EARRINGS</h2>
+                    </div>
+                    <div class="container">
+                        <ul class="collection-list" id="productList"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="footer" data-section>
+                <div w3-include-html="./assets/components/footer.html"></div>
+            </footer>
+
+            <!-- BACK TO TOP -->
+            <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+                <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
+            </a>
+
+            <script>
+                function fetchProducts() {
+                    fetch('/clovia/filtered-products?type=Earrings') // Replace with your URL and product type
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json(); // Expecting JSON response from the server
+                        })
+                        .then(data => {
+                            const productList = document.getElementById('productList');
+                            productList.innerHTML = ''; // Clear existing list
+
+                            // Assuming the response contains a list of product objects
+                            data.forEach(product => {
+                                const listItem = document.createElement('li');
+                                listItem.innerHTML = `
+                                <div class="shop-card">
+                                    <div class="card-banner img-holder" style="--width: 440; --height: 440;">
+                                    <img src="${product.image}" width="440" height="440" loading="lazy" alt="${product.productName}" class="img-cover">
+                                    <div class="card-actions">
+                                        <button class="action-btn" aria-label="add to cart">
+                                        <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                        <button class="action-btn" aria-label="add to wishlist">
+                                        <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                        <button class="action-btn" aria-label="compare">
+                                        <ion-icon name="repeat-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                    </div>
+                                    </div>
+                                    <div class="card-content">
+                                    <div class="price">
+                                        <span class="span">$${product.price}</span>
+                                    </div>
+                                    <h3>
+                                        <a href="#" class="card-title">${product.name}</a>
+                                    </h3>
+                                    </div>
+                                </div>
+                                `;
+                                productList.appendChild(listItem);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching products:', error));
+                }
+
+                // Call the function to fetch and display products when the page loads
+                fetchProducts();
+
+            </script>
+
+
+            <script src="https://www.w3schools.com/lib/w3.js"></script>
+            <script>
+                // to bring in other HTML on the fly into this page
+                w3.includeHTML();
+            </script>
+
+            <!-- Custom JS Link -->
+            <script src="./assets/js/script.js" defer></script>
+
+            <!-- Ionicon Link -->
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>

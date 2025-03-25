@@ -20,7 +20,9 @@ public class Config {
     // Product table and field names
     public static final String PRODUCTS_TABLE = "product"; // Change for different product table
     public static final String PRODUCT_ID_FIELD = "id";
-    public static final String PRODUCT_NAME_FIELD = "name";
+    public static final String PRODUCT_TYPE_FIELD = "productType";
+    public static final String PRODUCT_NAME_FIELD = "productName";
+    public static final String PRODUCT_IMAGE_FIELD = "productImage";
     public static final String PRODUCT_PRICE_FIELD = "price";
 
     // Page paths (relative to context root)
