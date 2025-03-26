@@ -23,12 +23,13 @@ public class LogoutServlet extends HttpServlet {
 
         Cookie usernameCookie = new Cookie("username", "");
         usernameCookie.setMaxAge(0);
+        usernameCookie.setPath("/");
         response.addCookie(usernameCookie);
 
         Cookie cartCountCookie = new Cookie("cartCount", "0");
         cartCountCookie.setMaxAge(0);
         response.addCookie(cartCountCookie);
-
-        response.sendRedirect(Config.HOME_PAGE + "?" + Config.SUCCESS_PARAM + "=Logged out successfully");
+    
+       response.sendRedirect(Config.HOME_PAGE + "?" + Config.SUCCESS_PARAM + "=Logged out successfully");
     }
 }

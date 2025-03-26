@@ -19,6 +19,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Redirect to login page with an error message if needed
         String redirect = request.getParameter("redirect");
         if (redirect != null) {
             response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Please log in to continue");
@@ -30,6 +31,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Get the username and password from the request parameters
         String username = request.getParameter(Config.LOGIN_IDENTIFIER);
         String password = request.getParameter(Config.PASSWORD_FIELD);
         String redirect = request.getParameter("redirect");
@@ -38,6 +40,7 @@ public class LoginServlet extends HttpServlet {
         System.out.println("LoginServlet doPost - Password: " + password);
 
         try (Connection conn = DBConnection.getConnection()) {
+            // SQL query to check the credentials
             String sql = "SELECT " + Config.LOGIN_IDENTIFIER + " FROM " + Config.USER_TABLE + " WHERE " + Config.LOGIN_IDENTIFIER + " = ? AND " + Config.PASSWORD_FIELD + " = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
@@ -45,29 +48,41 @@ public class LoginServlet extends HttpServlet {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                HttpSession session = request.getSession(true);
+                // If the user exists, create a session and set the username
+                HttpSession session = request.getSession(true);  // Ensure a session is created if it doesn't exist
                 System.out.println("LoginServlet doPost - Session ID: " + session.getId());
-                session.setAttribute(Config.LOGIN_IDENTIFIER, username);
-                System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER: " + username);
+                session.setAttribute(Config.LOGIN_IDENTIFIER, username);  // Store username in session
+                System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER in session: " + session.getAttribute(Config.LOGIN_IDENTIFIER));
+
+                // Set a cookie for the username that will persist for 1 hour
                 Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(3600);
-                response.addCookie(usernameCookie);
+                usernameCookie.setMaxAge(3600);  // 1 hour expiration
+                usernameCookie.setPath("/");
+                usernameCookie.setHttpOnly(false);
+                response.addCookie(usernameCookie);  // Add the cookie to the response
+
+                // Initialize cart if not already present in session
                 if (session.getAttribute(Config.CART_ITEMS) == null) {
                     session.setAttribute(Config.CART_ITEMS, new java.util.ArrayList<String>());
                     session.setAttribute(Config.CART_QUANTITIES, new java.util.HashMap<String, Integer>());
                 }
+
+                // Get cart items and set a cookie for the cart count
                 @SuppressWarnings("unchecked")
                 List<String> cart = (List<String>) session.getAttribute(Config.CART_ITEMS);
                 Cookie cartCountCookie = new Cookie("cartCount", String.valueOf(cart.size()));
-                cartCountCookie.setMaxAge(3600);
-                response.addCookie(cartCountCookie);
+                cartCountCookie.setMaxAge(3600);  // 1 hour expiration
+                response.addCookie(cartCountCookie);  // Add cart count cookie to the response
 
+                // Redirect to the appropriate page after successful login
                 String redirectUrl = (redirect != null && !redirect.isEmpty()) ? redirect : Config.HOME_PAGE;
                 response.sendRedirect(redirectUrl + "?" + Config.SUCCESS_PARAM + "=Login successful");
             } else {
+                // If the credentials are invalid, redirect to the login page with an error
                 response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Invalid " + Config.LOGIN_IDENTIFIER + " or password");
             }
         } catch (SQLException ex) {
+            // Handle any SQL exceptions
             System.out.println("LoginServlet doPost - SQLException: " + ex.getMessage());
             response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Login failed: " + ex.getMessage());
         }

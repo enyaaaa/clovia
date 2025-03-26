@@ -32,33 +32,52 @@
   <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg">
   <link rel="preload" as="image" href="./assets/images/hero-banner-3.jpg">
 
+  <style>
+    .username-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 10vh;
+      /* Adjust height to control spacing */
+    }
+
+    #username-display {
+      color: rgb(0, 0, 0);
+      font-size: 2rem;
+      font-family: 'Urbanist', sans-serif;
+      text-align: center;
+    }
+  </style>
+
 </head>
 
 <body id="top">
 
   <!-- 
-    - #HEADER
-  -->
+      - #HEADER
+    -->
+    <header class="header" data-header>
+      <div w3-include-html="./assets/components/alert.html"></div>
+      <div w3-include-html="./assets/components/topnav.html"></div>
+    </header>
 
-  <header class="header" data-header>
+    <!-- 
+      - USERNAME DISPLAY
+    -->
+    <div class="username-container">
+      <span id="username-display">Welcome, Guest</span>
+    </div>
 
-    <div w3-include-html="./assets/components/alert.html"></div>
-    <div w3-include-html="./assets/components/topnav.html"></div>
+    <!-- 
+      - #MOBILE NAVBAR
+    -->
+    <div class="sidebar">
+      <div w3-include-html="./assets/components/sidenav.html"></div>
+      <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
 
-  </header>
-
-  <!-- 
-    - #MOBILE NAVBAR
-  -->
-
-  <div class="sidebar">
-    <div w3-include-html="./assets/components/sidenav.html"></div>
-
-    <div class="overlay" data-nav-toggler data-overlay></div>
-  </div>
   <main>
     <article>
-
       <!-- 
         - #HERO
       -->
@@ -301,6 +320,40 @@
       </a>
 
       <script>
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) {
+            const cookieValue = parts.pop().split(';').shift();
+            console.log("Retrieved cookie value:", cookieValue);  // Log the cookie value for debugging
+            return cookieValue;
+          }
+          return null;
+        }
+
+        // Update username display on load
+        window.addEventListener('load', function () {
+          // Debug: Log all cookies
+          const username = getCookie('username');  // Get username from cookies
+          const usernameDisplay = document.getElementById('username-display');
+
+          if (username) {
+            usernameDisplay.innerText = `Welcome, ${username}`;
+          } else {
+            usernameDisplay.innerText = 'Welcome, Guest';
+          }
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const success = urlParams.get('success');
+          const error = urlParams.get('error');
+
+          if (success) {
+            alert(success);
+          } else if (error) {
+            alert(error);
+          }
+        });
+
         function fetchProducts() {
           fetch('/clovia/products') // Replace with your URL and product type
             .then(response => {
