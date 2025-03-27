@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info label {
+            display: block;
+            margin: 5px 0;
+        }
+        .profile-info input[type="text"],
+        .profile-info input[type="email"],
+        .profile-info input[type="file"],
+        .profile-info input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .profile-info button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .profile-info button:hover {
+            background-color: #0056b3;
+        }
+        .profile-picture {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .profile-picture img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .logout {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logout a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .logout a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>User Profile</h2>
+
+    <div class="profile-picture">
+        <img src="default-profile.png" alt="Profile Picture" id="profile-img">
+    </div>
+
+    <div class="profile-info">
+        <label for="username">Username</label>
+        <input type="text" id="username" value="" disabled>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" value="" disabled>
+
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" value="">
+
+        <label for="new-password">New Password</label>
+        <input type="password" id="new-password" placeholder="Enter new password">
+
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm new password">
+
+        <label for="profile-picture">Update Profile Picture</label>
+        <input type="file" id="profile-picture" accept="image/*">
+
+        <button id="save-changes">Save Changes</button>
+    </div>
+
+    <div class="logout">
+        <a href="#" id="logout">Logout</a>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function() {
+        const username = getCookie('username'); // Get username from cookies
+        const email = getCookie('email'); // Get email from cookies
+        const phone = getCookie('phone'); // Get phone number from cookies
+        const profileImg = getCookie('profile_img'); // Get profile image URL
+
+        if (username && email && phone) {
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = email;
+            document.getElementById('phone').value = phone;
+
+            if (profileImg) {
+                document.getElementById('profile-img').src = profileImg;
+            }
+        }
+
+        document.getElementById('save-changes').addEventListener('click', function() {
+            const newPhone = document.getElementById('phone').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Validate password match
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Handle profile picture update
+            const profilePictureInput = document.getElementById('profile-picture');
+            const profilePictureFile = profilePictureInput.files[0];
+            let newProfilePicture = document.getElementById('profile-img').src;
+
+            if (profilePictureFile) {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    newProfilePicture = reader.result;
+                    updateUserInfo(newPhone, newPassword, newProfilePicture);
+                };
+                reader.readAsDataURL(profilePictureFile);
+            } else {
+                updateUserInfo(newPhone, newPassword, newProfilePicture);
+            }
+        });
+
+        document.getElementById('logout').addEventListener('click', function() {
+            // Clear cookies to log out
+            document.cookie = 'username=; max-age=0';
+            document.cookie = 'email=; max-age=0';
+            document.cookie = 'phone=; max-age=0';
+            document.cookie = 'profile_img=; max-age=0';
+            window.location.href = '/login.html'; // Redirect to login page
+        });
+    });
+
+    function updateUserInfo(phone, password, profilePicture) {
+        // Save updated information (usually send to a server)
+        document.cookie = `phone=${phone}; path=/;`;
+        document.cookie = `profile_img=${profilePicture}; path=/;`;
+
+        // Simulating password update (you would handle this securely)
+        if (password) {
+            alert('Password updated successfully!');
+        }
+        alert('Profile updated successfully!');
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+</script>
+
+</body>
+</html>
