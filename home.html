@@ -1,428 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>clovia</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clovia</title>
 
-  <!-- 
-    - favicon
-  -->
-  <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
+    <!-- Favicon -->
+    <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
 
-  <!-- 
-    - custom css link
-  -->
-  <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="./assets/css/style.css">
 
-  <!-- 
-    - google font link
-  -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Font Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- 
-    - preload images
-  -->
-  <link rel="preload" as="image" href="./assets/images/logo.png">
-  <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg">
-  <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg">
-  <link rel="preload" as="image" href="./assets/images/hero-banner-3.jpg">
+    <!-- Preload Images -->
+    <link rel="preload" as="image" href="./assets/images/logo.png">
+    <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg">
+    <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg">
+    <link rel="preload" as="image" href="./assets/images/hero-banner-3.jpg">
 
-  <style>
-    .username-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 10vh;
-      /* Adjust height to control spacing */
-    }
+    <style>
+        .username-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 10vh;
+        }
 
-    #username-display {
-      color: rgb(0, 0, 0);
-      font-size: 2rem;
-      font-family: 'Urbanist', sans-serif;
-      text-align: center;
-    }
-  </style>
-
+        #username-display {
+            color: rgb(0, 0, 0);
+            font-size: 2rem;
+            font-family: 'Urbanist', sans-serif;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body id="top">
-
-  <!-- 
-      - #HEADER
-    -->
+    <!-- HEADER -->
     <header class="header" data-header>
-      <div w3-include-html="./assets/components/alert.html"></div>
-      <div w3-include-html="./assets/components/topnav.html"></div>
+        <div w3-include-html="./assets/components/alert.html"></div>
+        <div w3-include-html="./assets/components/topnav.html"></div>
     </header>
 
-    <!-- 
-      - USERNAME DISPLAY
-    -->
+    <!-- USERNAME DISPLAY -->
     <div class="username-container">
-      <span id="username-display">Welcome, Guest</span>
+        <span id="username-display">Welcome, Guest</span>
     </div>
 
-    <!-- 
-      - #MOBILE NAVBAR
-    -->
+    <!-- MOBILE NAVBAR -->
     <div class="sidebar">
-      <div w3-include-html="./assets/components/sidenav.html"></div>
-      <div class="overlay" data-nav-toggler data-overlay></div>
+        <div w3-include-html="./assets/components/sidenav.html"></div>
+        <div class="overlay" data-nav-toggler data-overlay></div>
     </div>
 
-  <main>
-    <article>
-      <!-- 
-        - #HERO
-      -->
-
-      <section class="section hero" id="home" aria-label="hero" data-section>
-        <div class="container">
-
-          <ul class="has-scrollbar">
-
-            <li class="scrollbar-item">
-              <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-1.jpg')">
-
-                <div class="card-content">
-
-                  <br>
-                  <br>
-
-                  <h1 class="h1 hero-title">
-                    Luxury <br>
-                    Within Reach
-                  </h1>
-
-                  <p class="hero-text">
-                    Exquisite jewelry to elevate your style.
-                  </p>
-
-                  <br>
-                  <br>
-
-                  <a href="#" class="btn btn-secondary">Shop Now</a>
-
+    <main>
+        <article>
+            <!-- HERO -->
+            <section class="section hero" id="home" aria-label="hero" data-section>
+                <div class="container">
+                    <ul class="has-scrollbar">
+                        <li class="scrollbar-item">
+                            <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-1.jpg')">
+                                <div class="card-content">
+                                    <br><br>
+                                    <h1 class="h1 hero-title">
+                                        Luxury <br>
+                                        Within Reach
+                                    </h1>
+                                    <p class="hero-text">
+                                        Exquisite jewelry to elevate your style.
+                                    </p>
+                                    <br><br>
+                                    <a href="#" class="btn btn-secondary">Shop Now</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="scrollbar-item">
+                            <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-2.jpg')">
+                                <div class="card-content">
+                                    <br><br>
+                                    <h1 class="h1 hero-title">
+                                        Elegance for <br>
+                                        Every Budget
+                                    </h1>
+                                    <p class="hero-text">
+                                        Stunning pieces crafted for every occasion.
+                                    </p>
+                                    <br><br>
+                                    <a href="#" class="btn btn-secondary">Shop Now</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="scrollbar-item">
+                            <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-3.jpg')">
+                                <div class="card-content">
+                                    <br><br>
+                                    <h1 class="h1 hero-title">
+                                        Affordable <br>
+                                        Luxury
+                                    </h1>
+                                    <p class="hero-text">
+                                        Timeless designs to make you shine every day.
+                                    </p>
+                                    <br><br>
+                                    <a href="#" class="btn btn-secondary">Shop Now</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
+            </section>
 
-              </div>
-            </li>
-
-            <li class="scrollbar-item">
-              <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-2.jpg')">
-
-                <div class="card-content">
-
-                  <br>
-                  <br>
-
-                  <h1 class="h1 hero-title">
-                    Elegance for <br>
-                    Every Budget
-                  </h1>
-
-                  <p class="hero-text">
-                    Stunning pieces crafted for every occasion.
-                  </p>
-
-                  <br>
-                  <br>
-
-                  <a href="#" class="btn btn-secondary">Shop Now</a>
-
+            <!-- SHOP -->
+            <section class="section shop" id="shop" aria-label="shop" data-section>
+                <div class="container">
+                    <div class="title-wrapper">
+                        <h2 class="h2 section-title">Our Bestsellers</h2>
+                        <a href="bestsellers.html" class="btn-link">
+                            <span class="span">Shop All Products</span>
+                            <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+                        </a>
+                    </div>
+                    <ul class="has-scrollbar" id="bestseller-list"></ul>
                 </div>
+            </section>
 
-              </div>
-            </li>
-
-            <li class="scrollbar-item">
-              <div class="hero-card has-bg-image" style="background-image: url('./assets/images/hero-banner-3.jpg')">
-
-                <div class="card-content">
-
-                  <br>
-                  <br>
-
-                  <h1 class="h1 hero-title">
-                    Affordable <br>
-                    Luxury
-                  </h1>
-
-                  <p class="hero-text">
-                    Timeless designs to make you shine every day.
-                  </p>
-
-                  <br>
-                  <br>
-
-                  <a href="#" class="btn btn-secondary">Shop Now</a>
-
+            <!-- COLLECTION -->
+            <section class="section collection" id="collection" aria-label="collection" data-section>
+                <div class="container">
+                    <ul class="collection-list">
+                        <li>
+                            <a href="necklaces.html">
+                                <div class="collection-card has-before hover:shine">
+                                    <h3 class="h3 card-title">NECKLACES</h3>
+                                    <div class="has-bg-image" style="background-image: url('./assets/images/collection-1.jpg')"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="bracelets.html">
+                                <div class="collection-card has-before hover:shine">
+                                    <h3 class="h3 card-title">BRACELETS</h3>
+                                    <div class="has-bg-image" style="background-image: url('./assets/images/collection-2.jpg')"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="rings.html">
+                                <div class="collection-card has-before hover:shine">
+                                    <h3 class="h3 card-title">RINGS</h3>
+                                    <div class="has-bg-image" style="background-image: url('./assets/images/collection-3.jpg')"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="earrings.html">
+                                <div class="collection-card has-before hover:shine">
+                                    <h3 class="h3 card-title">EARRINGS</h3>
+                                    <div class="has-bg-image" style="background-image: url('./assets/images/collection-4.jpg')"></div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </section>
 
-              </div>
-            </li>
+            <!-- BANNER -->
+            <section class="section banner" aria-label="banner" data-section>
+                <div class="container">
+                    <ul class="banner-list">
+                        <li>
+                            <div class="banner-card banner-card-1 has-before hover:shine">
+                                <p class="card-subtitle">Featured Collection</p>
+                                <h2 class="h2 card-title">Discover Our Ethereal Glow Collection</h2>
+                                <a href="#" class="btn btn-secondary">Explore More</a>
+                                <div class="has-bg-image" style="background-image: url('./assets/images/banner-1.jpg')"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="banner-card banner-card-2 has-before hover:shine">
+                                <h2 class="h2 card-title">Exclusive Offer for Subscribers</h2>
+                                <p class="card-text">
+                                    Enjoy 10% off your next purchase—just because we love sharing brilliance with you!
+                                </p>
+                                <a href="#" class="btn btn-secondary">Shop Sale</a>
+                                <div class="has-bg-image" style="background-image: url('./assets/images/banner-2.jpg')"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
 
-          </ul>
+            <!-- FOOTER -->
+            <footer class="footer" data-section>
+                <div w3-include-html="./assets/components/footer.html"></div>
+            </footer>
 
-        </div>
-      </section>
-
-      <!-- 
-        - #SHOP
-      -->
-
-      <section class="section shop" id="shop" aria-label="shop" data-section>
-        <div class="container">
-
-          <div class="title-wrapper">
-            <h2 class="h2 section-title">Our Bestsellers</h2>
-
-            <a href="bestsellers.html" class="btn-link">
-              <span class="span">Shop All Products</span>
-
-              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            <!-- BACK TO TOP -->
+            <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+                <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
             </a>
-          </div>
+        </article>
+    </main>
 
-          <ul class="has-scrollbar" id="bestseller-list">
-
-          </ul>
-
-
-        </div>
-      </section>
-
-      <!-- 
-        - #COLLECTION
-      -->
-
-      <section class="section collection" id="collection" aria-label="collection" data-section>
-        <div class="container">
-
-          <ul class="collection-list">
-
-            <li>
-              <a href="necklaces.html">
-                <div class="collection-card has-before hover:shine">
-
-                  <h3 class="h3 card-title">NECKLACES</h3>
-
-                  <div class="has-bg-image" style="background-image: url('./assets/images/collection-1.jpg')"></div>
-
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="bracelets.html">
-                <div class="collection-card has-before hover:shine">
-
-                  <h3 class="h3 card-title">BRACELETS</h3>
-
-                  <div class="has-bg-image" style="background-image: url('./assets/images/collection-2.jpg')"></div>
-
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="rings.html">
-                <div class="collection-card has-before hover:shine">
-
-                  <h3 class="h3 card-title">RINGS</h3>
-
-                  <div class="has-bg-image" style="background-image: url('./assets/images/collection-3.jpg')"></div>
-
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="earrings.html">
-                <div class="collection-card has-before hover:shine">
-
-                  <h3 class="h3 card-title">EARRINGS</h3>
-
-                  <div class="has-bg-image" style="background-image: url('./assets/images/collection-4.jpg')"></div>
-
-                </div>
-              </a>
-            </li>
-          </ul>
-
-        </div>
-      </section>
-
-      <!-- 
-        - #BANNER
-      -->
-
-      <section class="section banner" aria-label="banner" data-section>
-        <div class="container">
-
-          <ul class="banner-list">
-
-            <li>
-              <div class="banner-card banner-card-1 has-before hover:shine">
-
-                <p class="card-subtitle">Featured Collection</p>
-
-                <h2 class="h2 card-title">Discover Our Ethereal Glow Collection</h2>
-
-                <a href="#" class="btn btn-secondary">Explore More</a>
-
-                <div class="has-bg-image" style="background-image: url('./assets/images/banner-1.jpg')"></div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="banner-card banner-card-2 has-before hover:shine">
-
-                <h2 class="h2 card-title">Exclusive Offer for Subscribers</h2>
-
-                <p class="card-text">
-                  Enjoy 10% off your next purchase—just because we love sharing brilliance with you!
-                </p>
-
-                <a href="#" class="btn btn-secondary">Shop Sale</a>
-
-                <div class="has-bg-image" style="background-image: url('./assets/images/banner-2.jpg')"></div>
-
-              </div>
-            </li>
-
-          </ul>
-
-        </div>
-      </section>
-
-      <!-- 
-      - #FOOTER
-      -->
-
-      <footer class="footer" data-section>
-        <div w3-include-html="./assets/components/footer.html"></div>
-      </footer>
-
-      <!-- 
-    - #BACK TO TOP
-    -->
-
-      <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
-        <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
-      </a>
-
-      <script>
+    <script>
         function getCookie(name) {
-          const value = `; ${document.cookie}`;
-          const parts = value.split(`; ${name}=`);
-          if (parts.length === 2) {
-            const cookieValue = parts.pop().split(';').shift();
-            console.log("Retrieved cookie value:", cookieValue);  // Log the cookie value for debugging
-            return cookieValue;
-          }
-          return null;
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                const cookieValue = parts.pop().split(';').shift();
+                console.log("Retrieved cookie value:", cookieValue);
+                return cookieValue;
+            }
+            return null;
         }
 
         // Update username display on load
         window.addEventListener('load', function () {
-          // Debug: Log all cookies
-          const username = getCookie('username');  // Get username from cookies
-          const usernameDisplay = document.getElementById('username-display');
+            const username = getCookie('username');
+            const usernameDisplay = document.getElementById('username-display');
 
-          if (username) {
-            usernameDisplay.innerText = `Welcome, ${username}`;
-          } else {
-            usernameDisplay.innerText = 'Welcome, Guest';
-          }
+            if (username) {
+                usernameDisplay.innerText = `Welcome, ${username}`;
+            } else {
+                usernameDisplay.innerText = 'Welcome, Guest';
+            }
 
-          const urlParams = new URLSearchParams(window.location.search);
-          const success = urlParams.get('success');
-          const error = urlParams.get('error');
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const error = urlParams.get('error');
 
-          if (success) {
-            alert(success);
-          } else if (error) {
-            alert(error);
-          }
+            if (success) {
+                alert(success);
+            } else if (error) {
+                alert(error);
+            }
         });
 
         function fetchProducts() {
-          fetch('/clovia/products') // Replace with your URL and product type
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then(data => {
-              const productList = document.getElementById('bestseller-list');
-              productList.innerHTML = ''; // Clear existing list
+            fetch('/clovia/products')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const productList = document.getElementById('bestseller-list');
+                    productList.innerHTML = ''; // Clear existing list
 
-              data.forEach(product => {
-                const listItem = document.createElement('li');
-                listItem.className = 'scrollbar-item'; // Assign class directly
-                listItem.innerHTML = `
-          <div class="shop-card">
-            <div class="card-banner img-holder">
-              <img src="${product.image}" loading="lazy" alt="${product.productName}" class="img-cover">
-              <div class="card-actions">
-                <button class="action-btn" aria-label="add to cart">
-                  <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
-                </button>
-                <button class="action-btn" aria-label="add to wishlist">
-                  <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
-                </button>
-                <button class="action-btn" aria-label="compare">
-                  <ion-icon name="repeat-outline" aria-hidden="true"></ion-icon>
-                </button>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="price">
-                <span class="span">$${product.price}</span>
-              </div>
-              <h3>
-                <a href="#" class="card-title">${product.name}</a>
-              </h3>
-            </div>
-          </div>
-        `;
-                productList.appendChild(listItem);
-              });
-            })
-            .catch(error => console.error('Error fetching products:', error));
+                    // Shuffle the array and take the first 10 items
+                    const shuffledProducts = data.sort(() => Math.random() - 0.5).slice(0, 10);
+
+                    // Render the randomized 10 products
+                    shuffledProducts.forEach(product => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'scrollbar-item';
+                        listItem.innerHTML = `
+                            <div class="shop-card">
+                                <div class="card-banner img-holder">
+                                    <img src="${product.image}" loading="lazy" alt="${product.productName}" class="img-cover">
+                                    <div class="card-actions">
+                                        <button class="action-btn add-to-cart" aria-label="add to cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image}">
+                                            <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                        <button class="action-btn" aria-label="add to wishlist">
+                                            <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="price">
+                                        <span class="span">$${product.price}</span>
+                                    </div>
+                                    <h3>
+                                        <a href="#" class="card-title">${product.name}</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        `;
+                        productList.appendChild(listItem);
+                    });
+
+                    // Add event listeners to "Add to Cart" buttons
+                    document.querySelectorAll('.add-to-cart').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const product = {
+                                id: button.getAttribute('data-product-id'),
+                                name: button.getAttribute('data-product-name'),
+                                price: parseFloat(button.getAttribute('data-product-price')),
+                                image: button.getAttribute('data-product-image'),
+                                quantity: 1
+                            };
+
+                            // Get existing cart from localStorage or initialize an empty array
+                            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                            // Check if product already exists in cart
+                            const existingProductIndex = cart.findIndex(item => item.id === product.id);
+                            if (existingProductIndex > -1) {
+                                // Increase quantity if product exists
+                                cart[existingProductIndex].quantity += 1;
+                            } else {
+                                // Add new product to cart
+                                cart.push(product);
+                            }
+
+                            // Save updated cart to localStorage
+                            localStorage.setItem('cart', JSON.stringify(cart));
+
+                            // Redirect to cart page
+                            window.location.href = 'cart.html';
+                        });
+                    });
+                })
+                .catch(error => console.error('Error fetching products:', error));
         }
 
         // Call the function when the page loads
         fetchProducts();
+    </script>
 
-      </script>
-
-      <script src="https://www.w3schools.com/lib/w3.js"></script>
-      <script>
-        //to bring in other HTML on the fly into this page
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>
         w3.includeHTML();
-      </script>
+    </script>
 
-      <!-- 
-      - custom js link
-      -->
-      <script src="./assets/js/script.js" defer></script>
+    <!-- Custom JS Link -->
+    <script src="./assets/js/script.js" defer></script>
 
-      <!-- 
-      - ionicon link
-      -->
-      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-      <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+    <!-- Ionicon Link -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
-
 </html>

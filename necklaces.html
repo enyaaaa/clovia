@@ -61,55 +61,82 @@
 
             <script>
                 function fetchProducts() {
-                    fetch('/clovia/filtered-products?type=Necklace') // Replace with your URL and product type
+                    fetch('/clovia/filtered-products?type=Necklace')
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                            return response.json(); // Expecting JSON response from the server
+                            return response.json();
                         })
                         .then(data => {
                             const productList = document.getElementById('productList');
                             productList.innerHTML = ''; // Clear existing list
-
-                            // Assuming the response contains a list of product objects
+        
                             data.forEach(product => {
                                 const listItem = document.createElement('li');
                                 listItem.innerHTML = `
-                                <div class="shop-card">
-                                    <div class="card-banner img-holder" style="--width: 440; --height: 440;">
-                                    <img src="${product.image}" width="440" height="440" loading="lazy" alt="${product.productName}" class="img-cover">
-                                    <div class="card-actions">
-                                        <button class="action-btn" aria-label="add to cart">
-                                        <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
-                                        </button>
-                                        <button class="action-btn" aria-label="add to wishlist">
-                                        <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
-                                        </button>
-                                        <button class="action-btn" aria-label="compare">
-                                        <ion-icon name="repeat-outline" aria-hidden="true"></ion-icon>
-                                        </button>
+                                    <div class="shop-card">
+                                        <div class="card-banner img-holder" style="--width: 440; --height: 440;">
+                                            <img src="${product.image}" width="440" height="440" loading="lazy" alt="${product.productName}" class="img-cover">
+                                            <div class="card-actions">
+                                                <button class="action-btn add-to-cart" aria-label="add to cart" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" data-product-image="${product.image}">
+                                                    <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                                                </button>
+                                                <button class="action-btn" aria-label="add to wishlist">
+                                                    <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="price">
+                                                <span class="span">$${product.price}</span>
+                                            </div>
+                                            <h3>
+                                                <a href="#" class="card-title">${product.name}</a>
+                                            </h3>
+                                        </div>
                                     </div>
-                                    </div>
-                                    <div class="card-content">
-                                    <div class="price">
-                                        <span class="span">$${product.price}</span>
-                                    </div>
-                                    <h3>
-                                        <a href="#" class="card-title">${product.name}</a>
-                                    </h3>
-                                    </div>
-                                </div>
                                 `;
                                 productList.appendChild(listItem);
+                            });
+        
+                            // Add event listeners to "Add to Cart" buttons after products are loaded
+                            document.querySelectorAll('.add-to-cart').forEach(button => {
+                                button.addEventListener('click', () => {
+                                    const product = {
+                                        id: button.getAttribute('data-product-id'),
+                                        name: button.getAttribute('data-product-name'),
+                                        price: parseFloat(button.getAttribute('data-product-price')),
+                                        image: button.getAttribute('data-product-image'),
+                                        quantity: 1
+                                    };
+        
+                                    // Get existing cart from localStorage or initialize an empty array
+                                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+                                    // Check if product already exists in cart
+                                    const existingProductIndex = cart.findIndex(item => item.id === product.id);
+                                    if (existingProductIndex > -1) {
+                                        // Increase quantity if product exists
+                                        cart[existingProductIndex].quantity += 1;
+                                    } else {
+                                        // Add new product to cart
+                                        cart.push(product);
+                                    }
+        
+                                    // Save updated cart to localStorage
+                                    localStorage.setItem('cart', JSON.stringify(cart));
+        
+                                    // Redirect to cart page
+                                    window.location.href = 'cart.html';
+                                });
                             });
                         })
                         .catch(error => console.error('Error fetching products:', error));
                 }
-
+        
                 // Call the function to fetch and display products when the page loads
                 fetchProducts();
-
             </script>
 
 
