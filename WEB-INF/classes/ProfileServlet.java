@@ -12,7 +12,7 @@ public class ProfileServlet extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
-            response.sendRedirect("login.html?error=Please login first");
+            response.sendRedirect(request.getContextPath() + "/login.html?error=Please login first");
             return;
         }
 
@@ -29,12 +29,13 @@ public class ProfileServlet extends HttpServlet {
                 request.setAttribute("email", rs.getString("email"));
                 request.setAttribute("mobile", rs.getString("mobile"));
                 request.setAttribute("profilePic", rs.getString("profilePic"));
+                request.getRequestDispatcher("/profile.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("login.html?error=User not found");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        request.getRequestDispatcher("/profile.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -67,7 +68,6 @@ public class ProfileServlet extends HttpServlet {
 
             stmt.setString(3, picPath);
             stmt.setString(4, username);
-
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

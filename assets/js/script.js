@@ -75,9 +75,76 @@ function initializeNavbar() {
 window.onload = function () {
   includeHTML(() => {
     console.log("w3-include-html loaded successfully");
-    initializeNavbar(); // Run navbar script only after components are loaded
+    initializeNavbar();
+
+    // 🔁 DELAY the profileIcon listener until after DOM is re-rendered
+    setTimeout(() => {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', function (e) {
+          e.preventDefault();
+          fetch('/check-session')
+            .then(res => {
+              if (!res.ok) throw new Error('Session check failed: ' + res.status);
+              return res.json();
+            })
+            .then(data => {
+              // console.log("Session check result:", data);
+              // const welcome = document.getElementById("welcome-msg");
+              if (data.loggedIn) {
+                window.location.href = 'profile.html';
+              } else {
+                window.location.href = 'login.html?error=Please login first';
+              }
+            })
+            .catch(err => {
+              console.error('Session check failed', err);
+              window.location.href = 'login.html?error=Session error';
+            });
+        });
+      } else {
+        console.warn("⚠️ profile-icon not found after includeHTML");
+      }
+
+      fetch('/check-session')
+      .then(res => res.json())
+      .then(data => {
+        const welcome = document.getElementById("welcome-msg");
+        if (data.loggedIn && data.username && welcome) {
+          welcome.textContent = `Welcome, ${data.username}`;
+        }
+      })
+      .catch(err => console.error("Failed to update welcome message:", err));
+  
+  }, 0);
+
+   // 0ms timeout to ensure DOM is ready
+
+    // const profileIcon = document.getElementById('profile-icon');
+
+//     if (profileIcon) {
+//       profileIcon.addEventListener('click', function (e) {
+//         e.preventDefault();
+//         fetch('/check-session')
+//           .then(res => res.json())
+//           .then(data => {
+//             if (data.loggedIn) {
+//               window.location.href = 'profile.html';
+//             } else {
+//               window.location.href = 'login.html?error=Please login first';
+//             }
+//           })
+//           .catch(err => {
+//             console.error('Session check failed', err);
+//             window.location.href = 'login.html?error=Session error';
+//           });
+//       });
+//     } else {
+//       console.warn("⚠️ profile-icon not found when script ran");
+//     }
   });
 };
+
 
 /**
  * header sticky & back top btn active

@@ -26,10 +26,10 @@ public class Config {
     public static final String PRODUCT_PRICE_FIELD = "price";
 
     // Page paths (relative to context root)
-    public static final String LOGIN_PAGE = "login.html";
-    public static final String REGISTER_PAGE = "register.html";
-    public static final String HOME_PAGE = "home.html";
-    public static final String CART_PAGE = "cart.html";
+    public static final String LOGIN_PAGE = "/login.html";
+    public static final String REGISTER_PAGE = "/register.html";
+    public static final String HOME_PAGE = "/home.html";
+    public static final String CART_PAGE = "/cart.html";
     public static final String SEARCH_SERVLET = "search"; // URL mapping for SearchServlet
     public static final String CART_SERVLET = "cart";   // URL mapping for CartServlet
 

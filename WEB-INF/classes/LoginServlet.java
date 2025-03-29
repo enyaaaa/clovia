@@ -35,7 +35,7 @@ public class LoginServlet extends HttpServlet {
                 System.out.println("[LoginServlet] doPost called");
 
         // Get the username and password from the request parameters
-        String username = request.getParameter(Config.LOGIN_IDENTIFIER);
+        String username = request.getParameter("username");
         String password = request.getParameter(Config.PASSWORD_FIELD);
         String redirect = request.getParameter("redirect");
 
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
         try (Connection conn = DBConnection.getConnection()) {
             System.out.println("[LoginServlet] Connected to DB successfully");
             // SQL query to check the credentials
-            String sql = "SELECT " + Config.LOGIN_IDENTIFIER + " FROM " + Config.USER_TABLE + " WHERE " + Config.LOGIN_IDENTIFIER + " = ? AND " + Config.PASSWORD_FIELD + " = ?";
+            String sql = "SELECT " + "username" + " FROM " + Config.USER_TABLE + " WHERE " + "username" + " = ? AND " + Config.PASSWORD_FIELD + " = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -57,14 +57,14 @@ public class LoginServlet extends HttpServlet {
                 // If the user exists, create a session and set the username
                 HttpSession session = request.getSession(true);  // Ensure a session is created if it doesn't exist
                 System.out.println("LoginServlet doPost - Session ID: " + session.getId());
-                session.setAttribute(Config.LOGIN_IDENTIFIER, username);  // Store username in session
-                System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER in session: " + session.getAttribute(Config.LOGIN_IDENTIFIER));
+                session.setAttribute("username", username); // Store username in session
+                System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER in session: " + session.getAttribute("username"));
 
                 // Set a cookie for the username that will persist for 1 hour
                 Cookie usernameCookie = new Cookie("username", username);
                 usernameCookie.setMaxAge(3600);  // 1 hour expiration
-                usernameCookie.setPath("/");
-                usernameCookie.setHttpOnly(false);
+                usernameCookie.setPath("/clovia");
+                // usernameCookie.setHttpOnly(false);
                 response.addCookie(usernameCookie);  // Add the cookie to the response
 
                 // Initialize cart if not already present in session
@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect(redirectUrl + "?message=Login%20successful");
             } else {
                 // If the credentials are invalid, redirect to the login page with an error
-                response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Invalid " + Config.LOGIN_IDENTIFIER + " or password");
+                response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Invalid " + "username" + " or password");
             }
         } catch (SQLException ex) {
             // Handle any SQL exceptions

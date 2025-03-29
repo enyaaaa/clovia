@@ -136,20 +136,39 @@
 
 <script>
     window.addEventListener('load', function() {
-        const username = getCookie('username'); // Get username from cookies
-        const email = getCookie('email'); // Get email from cookies
-        const phone = getCookie('phone'); // Get phone number from cookies
-        const profileImg = getCookie('profile_img'); // Get profile image URL
+        fetch('/profile-data')
+            .then(response => {
+                if (!response.ok) {
+                window.location.href = 'login.html?error=Please login first';
+                return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                document.getElementById('username').value = data.username;
+                document.getElementById('email').value = data.email;
+                document.getElementById('phone').value = data.mobile;
+                document.getElementById('profile-img').src = data.profilePic || 'default-profile.png';
+            })
+            .catch(error => {
+                console.error('Error fetching profile data:', error);
+            });
 
-        if (username && email && phone) {
-            document.getElementById('username').value = username;
-            document.getElementById('email').value = email;
-            document.getElementById('phone').value = phone;
+        // const username = getCookie('username'); // Get username from cookies
+        // const email = getCookie('email'); // Get email from cookies
+        // const phone = getCookie('phone'); // Get phone number from cookies
+        // const profileImg = getCookie('profile_img'); // Get profile image URL
 
-            if (profileImg) {
-                document.getElementById('profile-img').src = profileImg;
-            }
-        }
+        // if (username && email && phone) {
+        //     document.getElementById('username').value = username;
+        //     document.getElementById('email').value = email;
+        //     document.getElementById('phone').value = phone;
+
+        //     if (profileImg) {
+        //         document.getElementById('profile-img').src = profileImg;
+        //     }
+        // }
 
         document.getElementById('save-changes').addEventListener('click', function() {
             const newPhone = document.getElementById('phone').value;
@@ -167,40 +186,49 @@
             const profilePictureFile = profilePictureInput.files[0];
             let newProfilePicture = document.getElementById('profile-img').src;
 
-            if (profilePictureFile) {
-                const reader = new FileReader();
-                reader.onloadend = function () {
-                    newProfilePicture = reader.result;
-                    updateUserInfo(newPhone, newPassword, newProfilePicture);
-                };
-                reader.readAsDataURL(profilePictureFile);
-            } else {
-                updateUserInfo(newPhone, newPassword, newProfilePicture);
-            }
+        if (profilePictureFile) {
+            updateUserInfo(newPhone, newPassword, profilePictureFile);
+        } else {
+            updateUserInfo(newPhone, newPassword, null);
+        }
+
         });
 
         document.getElementById('logout').addEventListener('click', function() {
             // Clear cookies to log out
-            document.cookie = 'username=; max-age=0';
-            document.cookie = 'email=; max-age=0';
-            document.cookie = 'phone=; max-age=0';
-            document.cookie = 'profile_img=; max-age=0';
-            window.location.href = '/login.html'; // Redirect to login page
+            // document.cookie = 'username=; max-age=0';
+            fetch('/logout').then(() => {
+                window.location.href = 'login.html';
+            });
+            // document.cookie = 'email=; max-age=0';
+            // document.cookie = 'phone=; max-age=0';
+            // document.cookie = 'profile_img=; max-age=0';
+            // window.location.href = 'login.html'; // Redirect to login page
         });
     });
 
-    function updateUserInfo(phone, password, profilePicture) {
-        // Save updated information (usually send to a server)
-        document.cookie = `phone=${phone}; path=/;`;
-        document.cookie = `profile_img=${profilePicture}; path=/;`;
+    function updateUserInfo(phone, password, profilePictureFile) {
+    const formData = new FormData();
+    formData.append('phone', phone);
+    formData.append('password', password);
+    formData.append('profile-picture', profilePictureFile); // send file object
 
-        // Simulating password update (you would handle this securely)
-        if (password) {
-            alert('Password updated successfully!');
+    fetch('/profile', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url; // redirect to updated profile
+        } else {
+            alert('Profile updated!');
         }
-        alert('Profile updated successfully!');
-    }
-
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
+        alert('Error saving changes!');
+    });
+}
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
