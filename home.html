@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>clovia</title>
 
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <!-- Favicon -->
     <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
 
@@ -219,9 +224,13 @@
             return null;
         }
 
+        // Check login status
+        function isLoggedIn() {
+            return !!getCookie('username');
+        }
+
         // Update username display on load
         window.addEventListener('load', function () {
-
             const username = getCookie('username');
             const usernameDisplay = document.getElementById('username-display');
 
@@ -252,12 +261,11 @@
                 })
                 .then(data => {
                     const productList = document.getElementById('bestseller-list');
-                    productList.innerHTML = ''; // Clear existing list
+                    productList.innerHTML = '';
 
-                    // Shuffle the array and take the first 10 items
+                    // Shuffle and take 10 products
                     const shuffledProducts = data.sort(() => Math.random() - 0.5).slice(0, 10);
 
-                    // Render the randomized 10 products
                     shuffledProducts.forEach(product => {
                         const listItem = document.createElement('li');
                         listItem.className = 'scrollbar-item';
@@ -271,6 +279,9 @@
                                         </button>
                                         <button class="action-btn" aria-label="add to wishlist">
                                             <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
+                                        </button>
+                                        <button class="action-btn" aria-label="compare">
+                                            <ion-icon name="repeat-outline" aria-hidden="true"></ion-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -290,6 +301,11 @@
                     // Add event listeners to "Add to Cart" buttons
                     document.querySelectorAll('.add-to-cart').forEach(button => {
                         button.addEventListener('click', () => {
+                            if (!isLoggedIn()) {
+                                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                                return;
+                            }
+
                             const product = {
                                 id: button.getAttribute('data-product-id'),
                                 name: button.getAttribute('data-product-name'),
@@ -298,23 +314,15 @@
                                 quantity: 1
                             };
 
-                            // Get existing cart from localStorage or initialize an empty array
                             let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-                            // Check if product already exists in cart
                             const existingProductIndex = cart.findIndex(item => item.id === product.id);
                             if (existingProductIndex > -1) {
-                                // Increase quantity if product exists
                                 cart[existingProductIndex].quantity += 1;
                             } else {
-                                // Add new product to cart
                                 cart.push(product);
                             }
 
-                            // Save updated cart to localStorage
                             localStorage.setItem('cart', JSON.stringify(cart));
-
-                            // Redirect to cart page
                             window.location.href = 'cart.html';
                         });
                     });

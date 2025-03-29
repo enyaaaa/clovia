@@ -3,110 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>User Profile - Clovia</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap');
-    
+
         body {
             font-family: 'Urbanist', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fefdf9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
-    
+
         .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
+            width: 900px;
+            height: 500px;
             background-color: #fff;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        }
-    
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 700;
-            color: #2c2c2c;
-        }
-    
-        .profile-picture {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 20px;
         }
-    
+
+        .profile-picture {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
         .profile-picture img {
             border-radius: 50%;
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             object-fit: cover;
             border: 3px solid #eee;
         }
-    
+
+        .profile-info {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            color: #2c2c2c;
+            font-size: 24px;
+        }
+
         .profile-info label {
             font-weight: 600;
-            margin-top: 10px;
-            display: block;
             color: #555;
+            font-size: 14px;
+            margin-bottom: 2px;
         }
-    
+
         .profile-info input[type="text"],
         .profile-info input[type="email"],
-        .profile-info input[type="file"],
         .profile-info input[type="password"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 10px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 6px;
             box-sizing: border-box;
+            font-size: 14px;
         }
-    
-        .profile-info button {
-            padding: 12px;
+
+        .profile-info input[type="file"] {
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .profile-info button,
+        .logout-btn {
+            padding: 10px;
             background-color: #7c9473;
             color: white;
             border: none;
-            width: 100%;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            flex: 1;
         }
-    
-        .profile-info button:hover {
+
+        .profile-info button:hover,
+        .logout-btn:hover {
             background-color: #6d825e;
         }
-    
-        .logout {
-            text-align: center;
-            margin-top: 20px;
+
+        .logout-btn {
+            background-color: #d9534f;
         }
-    
-        .logout a {
-            color: #7c9473;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    
-        .logout a:hover {
-            text-decoration: underline;
+
+        .logout-btn:hover {
+            background-color: #c9302c;
         }
     </style>
-    
 </head>
 <body>
+    <div class="container">
+        <div class="profile-picture">
+            <img src="default-profile.png" alt="Profile Picture" id="profile-img">
+        </div>
+        <div class="profile-info">
+            <h2>User Profile</h2>
+            <label for="username">Username</label>
+            <input type="text" id="username" value="" disabled>
 
-<div class="container">
-    <h2>User Profile</h2>
+            <label for="email">Email</label>
+            <input type="email" id="email" value="" disabled>
 
-    <div class="profile-picture">
-        <img src="default-profile.png" alt="Profile Picture" id="profile-img">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" value="">
+
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" placeholder="Enter new password">
+
+            <label for="profile-picture">Update Profile Picture</label>
+            <input type="file" id="profile-picture" accept="image/*">
+
+            <div class="button-group">
+                <button id="save-changes">Save Changes</button>
+                <button class="logout-btn" id="logout">Logout</button>
+            </div>
+        </div>
     </div>
 
+<<<<<<< Updated upstream
     <div class="profile-info">
         <label for="username">Username</label>
         <input type="text" id="username" value="" disabled>
@@ -169,23 +207,36 @@
         //         document.getElementById('profile-img').src = profileImg;
         //     }
         // }
+=======
+    <script>
+        // Get cookie value by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+>>>>>>> Stashed changes
 
-        document.getElementById('save-changes').addEventListener('click', function() {
-            const newPhone = document.getElementById('phone').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
+        // Set cookie
+        function setCookie(name, value, days) {
+            const expires = days ? `; expires=${new Date(Date.now() + days * 864e5).toUTCString()}` : '';
+            document.cookie = `${name}=${value || ''}${expires}; path=/`;
+        }
 
-            // Validate password match
-            if (newPassword && newPassword !== confirmPassword) {
-                alert('Passwords do not match!');
+        window.addEventListener('load', function() {
+            const username = getCookie('username');
+            if (!username) {
+                window.location.href = 'login.html';
                 return;
             }
 
-            // Handle profile picture update
-            const profilePictureInput = document.getElementById('profile-picture');
-            const profilePictureFile = profilePictureInput.files[0];
-            let newProfilePicture = document.getElementById('profile-img').src;
+            // Populate fields from cookies (for demo; ideally fetch from server)
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = getCookie('email') || 'Not set';
+            document.getElementById('phone').value = getCookie('mobile') || ''; // Matches Config.MOBILE_FIELD
 
+<<<<<<< Updated upstream
         if (profilePictureFile) {
             updateUserInfo(newPhone, newPassword, profilePictureFile);
         } else {
@@ -236,5 +287,53 @@
     }
 </script>
 
+=======
+            const profileImg = getCookie('profile_img');
+            if (profileImg) {
+                document.getElementById('profile-img').src = profileImg;
+            }
+
+            // Save Changes
+            document.getElementById('save-changes').addEventListener('click', function() {
+                const newPhone = document.getElementById('phone').value;
+                const newPassword = document.getElementById('new-password').value;
+                const profilePictureInput = document.getElementById('profile-picture');
+                const profilePictureFile = profilePictureInput.files[0];
+
+                if (profilePictureFile) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        setCookie('profile_img', reader.result, 30);
+                        document.getElementById('profile-img').src = reader.result;
+                        saveProfile(newPhone, newPassword);
+                    };
+                    reader.readAsDataURL(profilePictureFile);
+                } else {
+                    saveProfile(newPhone, newPassword);
+                }
+            });
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', function() {
+                fetch('/clovia/logout', { method: 'GET' })
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        }
+                    })
+                    .catch(error => console.error('Logout error:', error));
+            });
+        });
+
+        function saveProfile(phone, password) {
+            setCookie('mobile', phone, 30); // Matches Config.MOBILE_FIELD
+            if (password) {
+                // In a real app, send password update to server securely
+                alert('Password update would be sent to server!');
+            }
+            alert('Profile updated successfully!');
+        }
+    </script>
+>>>>>>> Stashed changes
 </body>
 </html>

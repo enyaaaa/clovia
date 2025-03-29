@@ -16,6 +16,7 @@
             </button>
         </div>
         <div class="header-actions">
+<<<<<<< Updated upstream
             <div id="user-auth-button" class="header-action-btns"></div>
 
             <a href="#" id="profile-icon" class="header-action-btn" aria-label="user">
@@ -23,15 +24,24 @@
              </a>             
            
             <button class="header-action-btn" aria-label="favourite item">
+=======
+            <a href="login.html" class="header-action-btn" id="login-btn">
+                <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+            </a>
+            <a href="profile.html" class="header-action-btn" id="profile-btn" style="display: none;">
+                <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+            </a>
+            <button class="header-action-btn" id="fav-btn" aria-label="favourite item" style="display: none;">
+>>>>>>> Stashed changes
                 <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
                 <span class="btn-badge">0</span>
             </button>
-            <button class="header-action-btn" id="cart-btn" aria-label="cart item">
+            <button class="header-action-btn" id="cart-btn" aria-label="cart item" style="display: none;">
                 <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
                 <span class="btn-badge" id="cart-count">0</span>
             </button>
         </div>
-        <nav class="navbar">
+        <nav class="navbar" data-navbar>
             <ul class="navbar-list">
                 <li>
                     <a href="home.html" class="navbar-link" data-nav-link>HOME</a>
@@ -55,26 +65,3 @@
         </nav>
     </div>
 </div>
-
-<script>
-    // Redirect to cart page when cart button is clicked
-    document.getElementById('cart-btn').addEventListener('click', () => {
-        window.location.href = 'cart.html';
-    });
-
-    // Update cart badge count on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const cartCountElement = document.getElementById('cart-count');
-        let totalItems = 0;
-
-        // Sum the quantities of all items in the cart
-        cart.forEach(item => {
-            totalItems += item.quantity;
-        });
-
-        if (cartCountElement) {
-            cartCountElement.textContent = totalItems;
-        }
-    });
-</script>

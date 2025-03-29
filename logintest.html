@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clovia</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
+
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- Google Fonts Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body id="top">
+
+    <!-- HEADER -->
+    <header class="header" data-header>
+        <div w3-include-html="./assets/components/alert.html"></div>
+        <div w3-include-html="./assets/components/topnav.html"></div>
+    </header>
+
+    <!-- MOBILE NAVBAR -->
+    <div class="sidebar">
+        <div w3-include-html="./assets/components/sidenav.html"></div>
+        <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+
+    <main>
+        <article>
+            <div class="login-form">
+                <h2>Login</h2>
+                <div id="message" class="error-message"></div>
+                <form id="login-form" method="post">
+                    <input type="text" id="username" name="username" class="login-input" placeholder="Username"
+                        required>
+                    <input type="password" id="password" name="password" class="login-input" placeholder="Password"
+                        required>
+                    <input type="submit" value="Login" class="login-btn">
+                </form>
+                <p style="font-size: 1.4rem; display: flex">
+                    <a id="register-link">Don't have an account?<strong> Register</strong></a>
+                </p>
+                <p style="text-align: left; font-size: 1.4rem;">
+                    <a id="home-link">Back to Home</a>
+                </p>
+            </div>
+
+            <script>
+                const contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) || '';
+
+                window.onload = function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const error = urlParams.get('error');
+                    const message = urlParams.get('message');
+                    const messageDiv = document.getElementById('message');
+                    if (error) {
+                        messageDiv.className = 'error-message';
+                        messageDiv.innerText = error;
+                    } else if (message) {
+                        messageDiv.className = 'success-message';
+                        messageDiv.innerText = message;
+                    }
+                    // Set form action and navigation links
+                    document.getElementById('login-form').action = contextPath + '/login';
+                    document.getElementById('register-link').href = contextPath + '/register.html';
+                    document.getElementById('home-link').href = contextPath + '/home.html';
+                };
+            </script>
+
+            <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'92358ec3df324583',t:'MTc0MjQ3NzM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+
+
+
+            <!-- FOOTER -->
+            <footer class="footer" data-section>
+                <div w3-include-html="./assets/components/footer.html"></div>
+            </footer>
+
+            <!-- BACK TO TOP -->
+            <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+                <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
+            </a>
+
+
+            <script src="https://www.w3schools.com/lib/w3.js"></script>
+            <script>
+                // to bring in other HTML on the fly into this page
+                w3.includeHTML();
+            </script>
+
+            <!-- Custom JS Link -->
+            <script src="./assets/js/script.js" defer></script>
+
+            <!-- Ionicon Link -->
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>
