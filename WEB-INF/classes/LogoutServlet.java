@@ -1,4 +1,3 @@
-// LogoutServlet.java
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,19 +16,23 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             System.out.println("LogoutServlet doGet - Invalidating session: " + session.getId());
-            session.removeAttribute(Config.LOGIN_IDENTIFIER);
+            session.removeAttribute("username"); // Assuming Config.LOGIN_IDENTIFIER is "username"
             session.invalidate();
         }
 
+        // Clear username cookie
         Cookie usernameCookie = new Cookie("username", "");
         usernameCookie.setMaxAge(0);
         usernameCookie.setPath("/");
         response.addCookie(usernameCookie);
 
+        // Clear cartCount cookie
         Cookie cartCountCookie = new Cookie("cartCount", "0");
         cartCountCookie.setMaxAge(0);
+        cartCountCookie.setPath("/");
         response.addCookie(cartCountCookie);
-    
-       response.sendRedirect(Config.HOME_PAGE + "?" + Config.SUCCESS_PARAM + "=Logged out successfully");
+
+        // Redirect to home page with success message
+        response.sendRedirect("/clovia/home.html?message=Logged%20out%20successfully");
     }
 }
