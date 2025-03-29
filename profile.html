@@ -144,70 +144,6 @@
         </div>
     </div>
 
-<<<<<<< Updated upstream
-    <div class="profile-info">
-        <label for="username">Username</label>
-        <input type="text" id="username" value="" disabled>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" value="" disabled>
-
-        <label for="phone">Phone Number</label>
-        <input type="text" id="phone" value="">
-
-        <label for="new-password">New Password</label>
-        <input type="password" id="new-password" placeholder="Enter new password">
-
-        <label for="confirm-password">Confirm Password</label>
-        <input type="password" id="confirm-password" placeholder="Confirm new password">
-
-        <label for="profile-picture">Update Profile Picture</label>
-        <input type="file" id="profile-picture" accept="image/*">
-
-        <button id="save-changes">Save Changes</button>
-    </div>
-
-    <div class="logout">
-        <a href="#" id="logout">Logout</a>
-    </div>
-</div>
-
-<script>
-    window.addEventListener('load', function() {
-        fetch('/profile-data')
-            .then(response => {
-                if (!response.ok) {
-                window.location.href = 'login.html?error=Please login first';
-                return;
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!data) return;
-                document.getElementById('username').value = data.username;
-                document.getElementById('email').value = data.email;
-                document.getElementById('phone').value = data.mobile;
-                document.getElementById('profile-img').src = data.profilePic || 'default-profile.png';
-            })
-            .catch(error => {
-                console.error('Error fetching profile data:', error);
-            });
-
-        // const username = getCookie('username'); // Get username from cookies
-        // const email = getCookie('email'); // Get email from cookies
-        // const phone = getCookie('phone'); // Get phone number from cookies
-        // const profileImg = getCookie('profile_img'); // Get profile image URL
-
-        // if (username && email && phone) {
-        //     document.getElementById('username').value = username;
-        //     document.getElementById('email').value = email;
-        //     document.getElementById('phone').value = phone;
-
-        //     if (profileImg) {
-        //         document.getElementById('profile-img').src = profileImg;
-        //     }
-        // }
-=======
     <script>
         // Get cookie value by name
         function getCookie(name) {
@@ -216,7 +152,6 @@
             if (parts.length === 2) return parts.pop().split(';').shift();
             return null;
         }
->>>>>>> Stashed changes
 
         // Set cookie
         function setCookie(name, value, days) {
@@ -236,58 +171,6 @@
             document.getElementById('email').value = getCookie('email') || 'Not set';
             document.getElementById('phone').value = getCookie('mobile') || ''; // Matches Config.MOBILE_FIELD
 
-<<<<<<< Updated upstream
-        if (profilePictureFile) {
-            updateUserInfo(newPhone, newPassword, profilePictureFile);
-        } else {
-            updateUserInfo(newPhone, newPassword, null);
-        }
-
-        });
-
-        document.getElementById('logout').addEventListener('click', function() {
-            // Clear cookies to log out
-            // document.cookie = 'username=; max-age=0';
-            fetch('/logout').then(() => {
-                window.location.href = 'login.html';
-            });
-            // document.cookie = 'email=; max-age=0';
-            // document.cookie = 'phone=; max-age=0';
-            // document.cookie = 'profile_img=; max-age=0';
-            // window.location.href = 'login.html'; // Redirect to login page
-        });
-    });
-
-    function updateUserInfo(phone, password, profilePictureFile) {
-    const formData = new FormData();
-    formData.append('phone', phone);
-    formData.append('password', password);
-    formData.append('profile-picture', profilePictureFile); // send file object
-
-    fetch('/profile', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url; // redirect to updated profile
-        } else {
-            alert('Profile updated!');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating profile:', error);
-        alert('Error saving changes!');
-    });
-}
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-</script>
-
-=======
             const profileImg = getCookie('profile_img');
             if (profileImg) {
                 document.getElementById('profile-img').src = profileImg;
@@ -334,6 +217,5 @@
             alert('Profile updated successfully!');
         }
     </script>
->>>>>>> Stashed changes
 </body>
 </html>
