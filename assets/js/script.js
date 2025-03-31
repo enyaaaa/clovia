@@ -17,19 +17,21 @@ const addEventOnElem = function (elem, type, callback) {
  * navbar toggle
  */
 function initializeNavbar() {
-    console.log("Initializing navbar after w3-include-html loads");
-
+    console.log("Initializing navbar");
     const navTogglers = document.querySelectorAll("[data-nav-toggler]");
-    const navbar = document.querySelector("[data-navbar]");
-    const navbarLinks = document.querySelectorAll("[data-nav-link]");
+    const navbar = document.querySelector(".mobile-navbar[data-navbar]"); // Specify mobile navbar
     const overlay = document.querySelector("[data-overlay]");
+    console.log("Nav Togglers:", navTogglers);
+    console.log("Navbar:", navbar);
+    console.log("Overlay:", overlay);
 
     if (!navbar || !overlay) {
-        console.error("Navbar or overlay not found! Ensure components are loaded.");
+        console.error("Navbar or overlay not found!");
         return;
     }
 
     const toggleNavbar = function () {
+        console.log("Toggling navbar");
         navbar.classList.toggle("active");
         overlay.classList.toggle("active");
     };
@@ -38,6 +40,7 @@ function initializeNavbar() {
         toggler.addEventListener("click", toggleNavbar);
     });
 
+    const navbarLinks = document.querySelectorAll(".mobile-navbar [data-nav-link]"); // Scope to mobile navbar
     const closeNavbar = function () {
         navbar.classList.remove("active");
         overlay.classList.remove("active");
