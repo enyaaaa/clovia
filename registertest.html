@@ -36,17 +36,26 @@
 
     <main>
         <article>
-            <div class="login-container">
-                <div class="login-form">
-                    <h2>Login</h2>
+            <div class="signup-container">
+                <div class="signup-form">
+                    <h2>Register</h2>
                     <div id="message" class="error-message"></div>
-                    <form id="login-form" method="post">
-                        <input type="text" id="username" name="username" class="login-input" placeholder="Username" required>
-                        <input type="password" id="password" name="password" class="login-input" placeholder="Password" required>
-                        <input type="submit" value="Login" class="login-btn">
+                    <form id="register-form" method="post">
+                        <div class="form-row">
+                            <div class="form-column">
+                                <input type="text" id="username" name="username" class="signup-input" placeholder="Username" required>
+                                <input type="email" id="email" name="email" class="signup-input" placeholder="Email" required>
+                                <input type="text" id="mobile" name="mobile" class="signup-input" placeholder="Mobile" required>
+                            </div>
+                            <div class="form-column">
+                                <input type="password" id="password" name="password" class="signup-input" placeholder="Password" required>
+                                <input type="password" id="confirm_password" name="confirm_password" class="signup-input" placeholder="Confirm Password" required>
+                            </div>
+                        </div>
+                        <input type="submit" value="Register" class="signup-btn">
                     </form>
-                    <p style="font-size: 1.4rem; display: flex">
-                        <a id="register-link">Don't have an account?<strong> Register</strong></a>
+                    <p style="font-size: 1.4rem; display: flex; padding-top: 10px;">
+                        <a id="login-link">Already have an account? <strong>Login</strong></a>
                     </p>
                     <p style="text-align: left; font-size: 1.4rem;">
                         <a id="home-link">Back to Home</a>
@@ -70,16 +79,12 @@
                         messageDiv.innerText = message;
                     }
                     // Set form action and navigation links
-                    document.getElementById('login-form').action = contextPath + '/login';
-                    document.getElementById('register-link').href = contextPath + '/register.html';
+                    document.getElementById('register-form').action = contextPath + '/register';
+                    document.getElementById('login-link').href = contextPath + '/login.html';
                     document.getElementById('home-link').href = contextPath + '/home.html';
                 };
             </script>
-
             <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'92358ec3df324583',t:'MTc0MjQ3NzM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
-
-
-
             <!-- FOOTER -->
             <footer class="footer" data-section>
                 <div w3-include-html="./assets/components/footer.html"></div>

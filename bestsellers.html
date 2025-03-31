@@ -57,6 +57,19 @@
     </main>
 
     <script>
+        // Function to get a cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Function to check if user is logged in
+        function isLoggedIn() {
+            return !!getCookie('username'); // Returns true if 'username' cookie exists
+        }
+
         function fetchProducts() {
             fetch('/clovia/products')
                 .then(response => {
@@ -104,6 +117,14 @@
                     // Add event listeners to "Add to Cart" buttons after products are loaded
                     document.querySelectorAll('.add-to-cart').forEach(button => {
                         button.addEventListener('click', () => {
+                            // Check if user is logged in
+                            if (!isLoggedIn()) {
+                                // Redirect to login page with return URL
+                                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                                return;
+                            }
+
+                            // If logged in, proceed with adding to cart
                             const product = {
                                 id: button.getAttribute('data-product-id'),
                                 name: button.getAttribute('data-product-name'),
@@ -139,7 +160,6 @@
         // Call the function to fetch and display products when the page loads
         fetchProducts();
     </script>
-
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script>
         w3.includeHTML();
