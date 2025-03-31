@@ -169,7 +169,7 @@
             // Populate fields from cookies (for demo; ideally fetch from server)
             document.getElementById('username').value = username;
             document.getElementById('email').value = getCookie('email') || 'Not set';
-            document.getElementById('phone').value = getCookie('mobile') || ''; // Matches Config.MOBILE_FIELD
+            document.getElementById('phone').value = getCookie('mobile') || '';
 
             const profileImg = getCookie('profile_img');
             if (profileImg) {
@@ -198,10 +198,14 @@
 
             // Logout
             document.getElementById('logout').addEventListener('click', function() {
+                console.log("Attempting logout...");
                 fetch('/clovia/logout', { method: 'GET' })
                     .then(response => {
+                        console.log("Logout response:", response.status, response.redirected);
                         if (response.redirected) {
                             window.location.href = response.url;
+                        } else {
+                            alert("Logout failed, please try again.");
                         }
                     })
                     .catch(error => console.error('Logout error:', error));
@@ -209,9 +213,8 @@
         });
 
         function saveProfile(phone, password) {
-            setCookie('mobile', phone, 30); // Matches Config.MOBILE_FIELD
+            setCookie('mobile', phone, 30);
             if (password) {
-                // In a real app, send password update to server securely
                 alert('Password update would be sent to server!');
             }
             alert('Profile updated successfully!');

@@ -16,20 +16,22 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             System.out.println("LogoutServlet doGet - Invalidating session: " + session.getId());
-            session.removeAttribute("username"); // Assuming Config.LOGIN_IDENTIFIER is "username"
+            session.removeAttribute(Config.LOGIN_IDENTIFIER); // Assuming "username"
             session.invalidate();
+        } else {
+            System.out.println("LogoutServlet doGet - No active session to invalidate");
         }
 
         // Clear username cookie
         Cookie usernameCookie = new Cookie("username", "");
         usernameCookie.setMaxAge(0);
-        usernameCookie.setPath("/");
+        usernameCookie.setPath("/clovia"); // Match LoginServlet
         response.addCookie(usernameCookie);
 
         // Clear cartCount cookie
         Cookie cartCountCookie = new Cookie("cartCount", "0");
         cartCountCookie.setMaxAge(0);
-        cartCountCookie.setPath("/");
+        cartCountCookie.setPath("/"); // Match LoginServlet
         response.addCookie(cartCountCookie);
 
         // Redirect to home page with success message

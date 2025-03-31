@@ -1,4 +1,3 @@
-// LoginServlet.java
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,8 +18,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                System.out.println("[LoginServlet] doGet called");
-        // Redirect to login page with an error message if needed
+        System.out.println("[LoginServlet] doGet called");
         String redirect = request.getParameter("redirect");
         if (redirect != null) {
             response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Please log in to continue");
@@ -32,9 +30,8 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                System.out.println("[LoginServlet] doPost called");
+        System.out.println("[LoginServlet] doPost called");
 
-        // Get the username and password from the request parameters
         String username = request.getParameter("username");
         String password = request.getParameter(Config.PASSWORD_FIELD);
         String redirect = request.getParameter("redirect");
@@ -44,7 +41,6 @@ public class LoginServlet extends HttpServlet {
 
         try (Connection conn = DBConnection.getConnection()) {
             System.out.println("[LoginServlet] Connected to DB successfully");
-            // SQL query to check the credentials
             String sql = "SELECT " + "username" + " FROM " + Config.USER_TABLE + " WHERE " + "username" + " = ? AND " + Config.PASSWORD_FIELD + " = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
@@ -54,47 +50,43 @@ public class LoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 System.out.println("[LoginServlet] User authenticated successfully");
-                // If the user exists, create a session and set the username
-                HttpSession session = request.getSession(true);  // Ensure a session is created if it doesn't exist
+                HttpSession session = request.getSession(true);
                 System.out.println("LoginServlet doPost - Session ID: " + session.getId());
-                session.setAttribute("username", username); // Store username in session
+                session.setAttribute("username", username);
                 System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER in session: " + session.getAttribute("username"));
 
-                // Set a cookie for the username that will persist for 1 hour
+                // Set username cookie
                 Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(3600);  // 1 hour expiration
+                usernameCookie.setMaxAge(3600); // 1 hour
                 usernameCookie.setPath("/clovia");
-                // usernameCookie.setHttpOnly(false);
-                response.addCookie(usernameCookie);  // Add the cookie to the response
+                response.addCookie(usernameCookie);
 
-                // Initialize cart if not already present in session
+                // Initialize cart if not present
                 if (session.getAttribute(Config.CART_ITEMS) == null) {
                     session.setAttribute(Config.CART_ITEMS, new java.util.ArrayList<String>());
                     session.setAttribute(Config.CART_QUANTITIES, new java.util.HashMap<String, Integer>());
                     System.out.println("[LoginServlet] Cart session attributes initialized");
                 }
 
-                // Get cart items and set a cookie for the cart count
+                // Set cart count cookie
                 @SuppressWarnings("unchecked")
                 List<String> cart = (List<String>) session.getAttribute(Config.CART_ITEMS);
                 Cookie cartCountCookie = new Cookie("cartCount", String.valueOf(cart.size()));
-                cartCountCookie.setMaxAge(3600);  // 1 hour expiration
-                cartCountCookie.setPath("/");  // Path for the cookie
-                cartCountCookie.setHttpOnly(true); 
-                response.addCookie(cartCountCookie);  // Add cart count cookie to the response
+                cartCountCookie.setMaxAge(3600); // 1 hour
+                cartCountCookie.setPath("/");
+                cartCountCookie.setHttpOnly(true);
+                response.addCookie(cartCountCookie);
 
-                // Redirect to the appropriate page after successful login
+                // Redirect to home page
                 String redirectUrl = "/clovia/home.html";
                 System.out.println("Redirecting to: " + redirectUrl + "?message=Login successful");
                 response.sendRedirect(redirectUrl + "?message=Login%20successful");
             } else {
-                // If the credentials are invalid, redirect to the login page with an error
                 response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Invalid " + "username" + " or password");
             }
         } catch (SQLException ex) {
-            // Handle any SQL exceptions
             System.out.println("LoginServlet doPost - SQLException: " + ex.getMessage());
-            ex.printStackTrace();  
+            ex.printStackTrace();
             response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Login failed: " + ex.getMessage());
         }
     }
