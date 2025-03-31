@@ -8,7 +8,7 @@ import jakarta.servlet.http.*;
 public class ProfileDataServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
 
@@ -21,9 +21,9 @@ public class ProfileDataServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             return;
         }
+        response.setContentType("application/json");
 
         String username = (String) session.getAttribute("username");
-        response.setContentType("application/json");
 
         try (Connection conn = DBConnection.getConnection()) {
             String sql = "SELECT username, email, mobile, profilePic FROM user WHERE username = ?";
@@ -39,7 +39,6 @@ public class ProfileDataServlet extends HttpServlet {
                     rs.getString("mobile"),
                     rs.getString("profilePic") == null ? "default-profile.png" : rs.getString("profilePic")
                 );
-                response.setContentType("application/json");
                 response.getWriter().write(profileJson);
             }
         } catch (SQLException e) {

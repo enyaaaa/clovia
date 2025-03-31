@@ -146,35 +146,52 @@
 
     <script>
         // Get cookie value by name
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
+        // function getCookie(name) {
+        //     const value = `; ${document.cookie}`;
+        //     const parts = value.split(`; ${name}=`);
+        //     if (parts.length === 2) return parts.pop().split(';').shift();
+        //     return null;
+        // }
 
-        // Set cookie
-        function setCookie(name, value, days) {
-            const expires = days ? `; expires=${new Date(Date.now() + days * 864e5).toUTCString()}` : '';
-            document.cookie = `${name}=${value || ''}${expires}; path=/`;
-        }
+        // // Set cookie
+        // function setCookie(name, value, days) {
+        //     const expires = days ? `; expires=${new Date(Date.now() + days * 864e5).toUTCString()}` : '';
+        //     document.cookie = `${name}=${value || ''}${expires}; path=/`;
+        // }
 
         window.addEventListener('load', function() {
-            const username = getCookie('username');
-            if (!username) {
-                window.location.href = 'login.html';
-                return;
-            }
+            fetch('/clovia/profile-data')  // Adjust base path if necessary
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Not logged in or error fetching profile.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('username').value = data.username || '';
+                    document.getElementById('email').value = data.email || 'Not set';
+                    document.getElementById('phone').value = data.mobile || '';
+
+
+            // const username = getCookie('username');
+            // if (!username) {
+            //     window.location.href = 'login.html';
+            //     return;
+            // }
 
             // Populate fields from cookies (for demo; ideally fetch from server)
-            document.getElementById('username').value = username;
-            document.getElementById('email').value = getCookie('email') || 'Not set';
-            document.getElementById('phone').value = getCookie('mobile') || '';
+            // document.getElementById('username').value = username;
+            // document.getElementById('email').value = getCookie('email') || 'Not set';
+            // document.getElementById('phone').value = getCookie('mobile') || '';
 
-            const profileImg = getCookie('profile_img');
-            if (profileImg) {
-                document.getElementById('profile-img').src = profileImg;
-            }
+            const profileImg = document.getElementById('profile-img');
+            profileImg.src = data.profilePic ? `images/${data.profilePic}` : 'images/default-profile.png';
+            })
+            .catch(error => {
+                console.error('[Profile Error]', error);
+                window.location.href = 'login.html';
+            });
+
 
             // Save Changes
             document.getElementById('save-changes').addEventListener('click', function() {
@@ -183,18 +200,36 @@
                 const profilePictureInput = document.getElementById('profile-picture');
                 const profilePictureFile = profilePictureInput.files[0];
 
-                if (profilePictureFile) {
-                    const reader = new FileReader();
-                    reader.onloadend = function() {
-                        setCookie('profile_img', reader.result, 30);
-                        document.getElementById('profile-img').src = reader.result;
-                        saveProfile(newPhone, newPassword);
-                    };
-                    reader.readAsDataURL(profilePictureFile);
-                } else {
-                    saveProfile(newPhone, newPassword);
-                }
+                const formData = new FormData();
+                formData.append('phone', newPhone);
+                if (newPassword) formData.append('password', newPassword);
+                if (profilePictureFile) formData.append('profilePic', profilePictureFile);
+
+                fetch('/clovia/update-profile', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.text())
+                .then(data => {
+                    alert("Profile updated!");
+                    location.reload(); // Refresh to get latest image from server
+                })
+                .catch(err => console.error("Update failed", err));
             });
+
+
+            //     if (profilePictureFile) {
+            //         const reader = new FileReader();
+            //         reader.onloadend = function() {
+            //             setCookie('profile_img', reader.result, 30);
+            //             document.getElementById('profile-img').src = reader.result;
+            //             saveProfile(newPhone, newPassword);
+            //         };
+            //         reader.readAsDataURL(profilePictureFile);
+            //     } else {
+            //         saveProfile(newPhone, newPassword);
+            //     }
+            // });
 
             // Logout
             document.getElementById('logout').addEventListener('click', function() {
@@ -212,13 +247,13 @@
             });
         });
 
-        function saveProfile(phone, password) {
-            setCookie('mobile', phone, 30);
-            if (password) {
-                alert('Password update would be sent to server!');
-            }
-            alert('Profile updated successfully!');
-        }
+        // function saveProfile(phone, password) {
+        //     setCookie('mobile', phone, 30);
+        //     if (password) {
+        //         alert('Password update would be sent to server!');
+        //     }
+        //     alert('Profile updated successfully!');
+        // }
     </script>
 </body>
 </html>
