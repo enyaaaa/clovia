@@ -15,16 +15,19 @@ import jakarta.servlet.http.Cookie;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
+    // Helper method to send error response
+    private void sendError(HttpServletResponse response, String message) throws IOException {
+        response.setContentType("text/plain");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.getWriter().write(message);
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("[LoginServlet] doGet called");
         String redirect = request.getParameter("redirect");
-        if (redirect != null) {
-            response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Please log in to continue");
-        } else {
-            response.sendRedirect(Config.LOGIN_PAGE);
-        }
+        sendError(response, "Please log in to continue");
     }
 
     @Override
@@ -34,18 +37,41 @@ public class LoginServlet extends HttpServlet {
 
         String username = request.getParameter("username");
         String password = request.getParameter(Config.PASSWORD_FIELD);
-        String redirect = request.getParameter("redirect");
 
         System.out.println("LoginServlet doPost - Username: " + username);
-        System.out.println("LoginServlet doPost - Password: " + password);
+        System.out.println("LoginServlet doPost - Password: " + (password != null ? "[hidden]" : "null"));
+
+        // Server-side format validation
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("[LoginServlet] Validation failed: Username is empty");
+            sendError(response, "Username is required");
+            return;
+        }
+        if (username.length() < 3) {
+            System.out.println("[LoginServlet] Validation failed: Username too short");
+            sendError(response, "Username must be at least 3 characters");
+            return;
+        }
+        if (!username.matches("^[a-zA-Z0-9]+$")) {
+            System.out.println("[LoginServlet] Validation failed: Username not alphanumeric");
+            sendError(response, "Username must be alphanumeric");
+            return;
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            System.out.println("[LoginServlet] Validation failed: Password is empty");
+            sendError(response, "Password is required");
+            return;
+        }
 
         try (Connection conn = DBConnection.getConnection()) {
             System.out.println("[LoginServlet] Connected to DB successfully");
-            String sql = "SELECT " + "username" + " FROM " + Config.USER_TABLE + " WHERE " + "username" + " = ? AND " + Config.PASSWORD_FIELD + " = ?";
+
+            // Check credentials
+            String sql = "SELECT username FROM " + Config.USER_TABLE + " WHERE username = ? AND " + Config.PASSWORD_FIELD + " = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
-            System.out.println("[LoginServlet] Executing SQL query to check user credentials");
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -53,7 +79,6 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 System.out.println("LoginServlet doPost - Session ID: " + session.getId());
                 session.setAttribute("username", username);
-                System.out.println("LoginServlet doPost - Set LOGIN_IDENTIFIER in session: " + session.getAttribute("username"));
 
                 // Set username cookie
                 Cookie usernameCookie = new Cookie("username", username);
@@ -77,17 +102,17 @@ public class LoginServlet extends HttpServlet {
                 cartCountCookie.setHttpOnly(true);
                 response.addCookie(cartCountCookie);
 
-                // Redirect to home page
-                String redirectUrl = "/clovia/home.html";
-                System.out.println("Redirecting to: " + redirectUrl + "?message=Login successful");
-                response.sendRedirect(redirectUrl + "?message=Login%20successful");
+                response.setContentType("text/plain");
+                response.setStatus(HttpServletResponse.SC_OK); // 200
+                response.getWriter().write("Login successful");
             } else {
-                response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Invalid " + "username" + " or password");
+                System.out.println("[LoginServlet] Authentication failed: Invalid credentials");
+                sendError(response, "Invalid username or password");
             }
         } catch (SQLException ex) {
             System.out.println("LoginServlet doPost - SQLException: " + ex.getMessage());
             ex.printStackTrace();
-            response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Login failed: " + ex.getMessage());
+            sendError(response, "Login failed: " + ex.getMessage());
         }
     }
 }
