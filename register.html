@@ -1,33 +1,27 @@
-<!-- register.html -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>clovia</title>
-
-    <!-- 
-    - favicon
-  -->
+    <title>Clovia</title>
     <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
-
-    <!-- 
-    - custom css link
-  -->
     <link rel="stylesheet" href="./assets/css/style.css">
-
-    <!-- 
-    - google font link
-  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+<body id="top">
+    <header class="header" data-header>
+        <div w3-include-html="./assets/components/alert.html"></div>
+        <div w3-include-html="./assets/components/topnav.html"></div>
+    </header>
 
-<body class="signup-body">
+    <div class="sidebar">
+        <div w3-include-html="./assets/components/sidenav.html"></div>
+        <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+
     <main>
         <article>
             <div class="signup-container">
@@ -35,17 +29,20 @@
                     <h2>Register</h2>
                     <div id="message" class="error-message"></div>
                     <form id="register-form" method="post">
-                        <input type="text" id="username" name="username" class="signup-input" placeholder="Username"
-                            required>
-                        <input type="email" id="email" name="email" class="signup-input" placeholder="Email" required>
-                        <input type="text" id="mobile" name="mobile" class="signup-input" placeholder="Mobile" required>
-                        <input type="password" id="password" name="password" class="signup-input" placeholder="Password"
-                            required>
-                        <input type="password" id="confirm_password" name="confirm_password" class="signup-input"
-                            placeholder="Confirm Password" required>
+                        <div class="form-row">
+                            <div class="form-column">
+                                <input type="text" id="username" name="username" class="signup-input" placeholder="Username" required>
+                                <input type="email" id="email" name="email" class="signup-input" placeholder="Email" required>
+                                <input type="text" id="mobile" name="mobile" class="signup-input" placeholder="Mobile" required>
+                            </div>
+                            <div class="form-column">
+                                <input type="password" id="password" name="password" class="signup-input" placeholder="Password" required>
+                                <input type="password" id="confirm_password" name="confirm_password" class="signup-input" placeholder="Confirm Password" required>
+                            </div>
+                        </div>
                         <input type="submit" value="Register" class="signup-btn">
                     </form>
-                    <p style="font-size: 1.4rem; display: flex">
+                    <p style="font-size: 1.4rem; display: flex; padding-top: 10px;">
                         <a id="login-link">Already have an account? <strong>Login</strong></a>
                     </p>
                     <p style="text-align: left; font-size: 1.4rem;">
@@ -53,8 +50,121 @@
                     </p>
                 </div>
             </div>
+
             <script>
                 const contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) || '';
+
+                // Client-side validation
+                function validateForm() {
+                    const username = document.getElementById('username').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const mobile = document.getElementById('mobile').value.trim();
+                    const password = document.getElementById('password').value.trim();
+                    const confirmPassword = document.getElementById('confirm_password').value.trim();
+                    const messageDiv = document.getElementById('message');
+
+                    messageDiv.innerText = '';
+                    messageDiv.className = 'error-message';
+
+                    // Username validation
+                    if (!username) {
+                        messageDiv.innerText = 'Username is required';
+                        return false;
+                    }
+                    if (username.length < 3) {
+                        messageDiv.innerText = 'Username must be at least 3 characters';
+                        return false;
+                    }
+                    if (!/^[a-zA-Z0-9]+$/.test(username)) {
+                        messageDiv.innerText = 'Username must be alphanumeric';
+                        return false;
+                    }
+
+                    // Email validation
+                    if (!email) {
+                        messageDiv.innerText = 'Email is required';
+                        return false;
+                    }
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        messageDiv.innerText = 'Invalid email format';
+                        return false;
+                    }
+
+                    // Mobile validation
+                    if (!mobile) {
+                        messageDiv.innerText = 'Mobile number is required';
+                        return false;
+                    }
+                    if (!/^\d{8}$/.test(mobile)) {
+                        messageDiv.innerText = 'Mobile number must be 10 digits';
+                        return false;
+                    }
+
+                    // Password validation
+                    if (!password) {
+                        messageDiv.innerText = 'Password is required';
+                        return false;
+                    }
+
+                    // Confirm password validation
+                    if (!confirmPassword) {
+                        messageDiv.innerText = 'Confirm password is required';
+                        return false;
+                    }
+                    if (password !== confirmPassword) {
+                        messageDiv.innerText = 'Passwords do not match';
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                // Form submission with AJAX
+                document.getElementById('register-form').addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const username = document.getElementById('username').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const mobile = document.getElementById('mobile').value.trim();
+                    const password = document.getElementById('password').value.trim();
+                    const confirmPassword = document.getElementById('confirm_password').value.trim();
+                    const messageDiv = document.getElementById('message');
+
+                    if (!validateForm()) {
+                        return;
+                    }
+
+                    fetch(contextPath + '/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'username': username,
+                            'email': email,
+                            'mobile': mobile,
+                            'password': password,
+                            'confirm_password': confirmPassword
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        messageDiv.className = 'success-message';
+                        messageDiv.innerText = data || 'Registration successful';
+                        setTimeout(() => {
+                            window.location.href = contextPath + '/login.html';
+                        }, 1000); // Redirect to login after 1 second
+                    })
+                    .catch(error => {
+                        messageDiv.className = 'error-message';
+                        messageDiv.innerText = error.message || 'Registration failed';
+                    });
+                });
 
                 window.onload = function () {
                     const urlParams = new URLSearchParams(window.location.search);
@@ -63,20 +173,33 @@
                     const messageDiv = document.getElementById('message');
                     if (error) {
                         messageDiv.className = 'error-message';
-                        messageDiv.innerText = error;
+                        messageDiv.innerText = decodeURIComponent(error);
                     } else if (message) {
                         messageDiv.className = 'success-message';
-                        messageDiv.innerText = message;
+                        messageDiv.innerText = decodeURIComponent(message);
                     }
-                    // Set form action and navigation links
-                    document.getElementById('register-form').action = contextPath + '/register';
                     document.getElementById('login-link').href = contextPath + '/login.html';
                     document.getElementById('home-link').href = contextPath + '/home.html';
                 };
             </script>
+
+            <!-- Cloudflare script unchanged -->
             <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'92358ec3df324583',t:'MTc0MjQ3NzM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
-
+        </article>
     </main>
-</body>
 
+    <footer class="footer" data-section>
+        <div w3-include-html="./assets/components/footer.html"></div>
+    </footer>
+
+    <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+        <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
+    </a>
+
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>w3.includeHTML();</script>
+    <script src="./assets/js/script.js" defer></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
 </html>

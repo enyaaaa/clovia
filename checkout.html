@@ -4,15 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clovia - Cart</title>
-
-    <!-- Favicon -->
+    <title>Clovia - Checkout</title>
     <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
-
-    <!-- Custom CSS Link -->
     <link rel="stylesheet" href="./assets/css/style.css">
-
-    <!-- Google Fonts Link -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -39,11 +33,6 @@
             border-radius: 3px;
             box-shadow: 0 4px 10px hsla(0, 0%, 0%, 0.05);
             padding: 15px;
-            transition: 0.25s ease;
-        }
-
-        .checkout-item:hover {
-            box-shadow: 0 8px 16px hsla(0, 0%, 0%, 0.15);
         }
 
         .checkout-item-img .img-holder {
@@ -110,13 +99,13 @@
             padding: 10px 30px;
             border-radius: 3px;
             transition: 0.25s ease;
-            background-color: hsl(0, 0%, 0%);
+            background-color: #28a745; /* Green */
             color: hsl(0, 0%, 100%);
         }
 
         .confirm-btn:hover,
         .confirm-btn:focus {
-            background-color: hsl(148, 20%, 38%);
+            background-color: #218838; /* Darker green */
         }
 
         .h2.section-title {
@@ -185,16 +174,34 @@
             height: 100%;
             object-fit: cover;
         }
+
+        /* Receipt-like styling */
+        .checkout-items {
+            border: 1px solid hsl(0, 0%, 80%);
+            padding: 10px;
+            background-color: hsl(0, 0%, 100%);
+        }
+
+        .checkout-item {
+            border-bottom: 1px dashed hsl(0, 0%, 80%);
+            box-shadow: none; /* Remove shadow for receipt feel */
+        }
+
+        .checkout-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkout-item-details p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body id="top">
-    <!-- HEADER -->
     <header class="header" data-header>
         <div w3-include-html="./assets/components/alert.html"></div>
         <div w3-include-html="./assets/components/topnav.html"></div>
     </header>
 
-    <!-- MOBILE NAVBAR -->
     <div class="sidebar">
         <div w3-include-html="./assets/components/sidenav.html"></div>
         <div class="overlay" data-nav-toggler data-overlay></div>
@@ -202,7 +209,6 @@
 
     <main>
         <article>
-            <!-- Checkout Section -->
             <section class="checkout section" data-section>
                 <div class="container">
                     <h2 class="h2 section-title">Order Confirmation</h2>
@@ -213,106 +219,104 @@
                 </div>
             </section>
 
-            <!-- FOOTER -->
             <footer class="footer" data-section>
                 <div w3-include-html="./assets/components/footer.html"></div>
             </footer>
 
-            <!-- BACK TO TOP -->
             <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
                 <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
             </a>
         </article>
     </main>
 
-    <!-- Checkout Script -->
     <script>
+        const contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) || '';
+
         function displayCheckout() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const checkoutItems = document.getElementById('checkoutItems');
-            const checkoutSummary = document.getElementById('checkoutSummary');
-
-            checkoutItems.innerHTML = '';
-            let subtotal = 0;
-
-            if (cart.length === 0) {
-                checkoutItems.innerHTML = '<p>Your cart is empty.</p>';
-            } else {
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    subtotal += itemTotal;
-
-                    const checkoutItem = document.createElement('div');
-                    checkoutItem.classList.add('checkout-item');
-                    checkoutItem.innerHTML = `
-                        <div class="checkout-item-img">
-                            <div class="img-holder" style="--width: 100; --height: 100;">
-                                <img src="${item.image}" alt="${item.name}" class="img-cover">
-                            </div>
-                        </div>
-                        <div class="checkout-item-details">
-                            <h3 class="h3 card-title">${item.name}</h3>
-                            <p class="checkout-item-price"><span class="span">$${item.price.toFixed(2)}</span></p>
-                            <p>Quantity: ${item.quantity}</p>
-                        </div>
-                    `;
-                    checkoutItems.appendChild(checkoutItem);
-                });
-            }
-
-            const shipping = cart.length > 0 ? 5.00 : 0;
-            const total = subtotal + shipping;
-            checkoutSummary.innerHTML = `
-                <h3 class="h3">Order Summary</h3>
-                <div class="summary-item">
-                    <span>Subtotal</span>
-                    <span class="summary-value">$${subtotal.toFixed(2)}</span>
-                </div>
-                <div class="summary-item">
-                    <span>Shipping</span>
-                    <span class="summary-value">$${shipping.toFixed(2)}</span>
-                </div>
-                <div class="summary-item total">
-                    <span>Total</span>
-                    <span class="summary-value">$${total.toFixed(2)}</span>
-                </div>
-                <button class="btn btn-primary confirm-btn" id="confirm-order">Confirm Order</button>
-            `;
-
-            // Add event listener for Confirm Order button
-            document.getElementById('confirm-order').addEventListener('click', () => {
-                // Prepare cart data to send to the server
-                const orderData = {
-                    items: cart,
-                    subtotal: subtotal,
-                    shipping: shipping,
-                    total: total
-                };
-
-                // Send order data to the server
-                fetch('/clovia/confirm-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
+            fetch(contextPath + '/cart')
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch cart');
+                    return response.json();
                 })
-                .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        // Clear the cart after successful order
-                        localStorage.removeItem('cart');
-                        alert('Order confirmed successfully!');
-                        window.location.href = 'home.html?success=Order placed successfully';
-                    } else {
-                        alert('Error confirming order: ' + (data.message || 'Unknown error'));
+                    const checkoutItems = document.getElementById('checkoutItems');
+                    const checkoutSummary = document.getElementById('checkoutSummary');
+
+                    checkoutItems.innerHTML = '';
+                    if (data.items.length === 0) {
+                        checkoutItems.innerHTML = '<p>Your cart is empty.</p>';
+                        checkoutSummary.innerHTML = '<p>No items to summarize.</p>';
+                        return;
                     }
+
+                    data.items.forEach(item => {
+                        const checkoutItem = document.createElement('div');
+                        checkoutItem.classList.add('checkout-item');
+                        checkoutItem.innerHTML = `
+                            <div class="checkout-item-img">
+                                <div class="img-holder" style="--width: 100; --height: 100;">
+                                    <img src="${item.image}" alt="${item.name}" class="img-cover">
+                                </div>
+                            </div>
+                            <div class="checkout-item-details">
+                                <h3 class="h3 card-title">${item.name}</h3>
+                                <p>Price: <span class="span">$${item.price.toFixed(2)}</span></p>
+                                <p>Quantity: ${item.quantity}</p>
+                                <p>Total: $${item.total.toFixed(2)}</p>
+                            </div>
+                        `;
+                        checkoutItems.appendChild(checkoutItem);
+                    });
+
+                    checkoutSummary.innerHTML = `
+                        <h3 class="h3">Order Summary</h3>
+                        <div class="summary-item">
+                            <span>Subtotal</span>
+                            <span class="summary-value">$${data.subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Shipping</span>
+                            <span class="summary-value">$${data.shipping.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>Total</span>
+                            <span class="summary-value">$${data.total.toFixed(2)}</span>
+                        </div>
+                        <button class="btn btn-primary confirm-btn" id="confirm-order">Confirm Order</button>
+                    `;
+
+                    document.getElementById('confirm-order').addEventListener('click', () => {
+                        const orderData = {
+                            items: data.items,
+                            subtotal: data.subtotal,
+                            shipping: data.shipping,
+                            total: data.total
+                        };
+
+                        fetch(contextPath + '/confirm-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(orderData)
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('Order confirmed successfully! A receipt has been sent to your email.');
+                                window.location.href = contextPath + '/home.html?success=Order placed successfully';
+                            } else {
+                                alert('Error confirming order: ' + (result.message || 'Unknown error'));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error confirming order:', error);
+                            alert('Error confirming order. Please try again.');
+                        });
+                    });
                 })
                 .catch(error => {
-                    console.error('Error confirming order:', error);
-                    alert('Error confirming order. Please try again.');
+                    console.error('Error fetching checkout:', error);
+                    document.getElementById('checkoutItems').innerHTML = '<p>Error loading checkout. Please try again.</p>';
                 });
-            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -320,14 +324,9 @@
         });
     </script>
 
-    <!-- Scripts -->
     <script src="https://www.w3schools.com/lib/w3.js"></script>
-    <script>
-        w3.includeHTML();
-    </script>
-
+    <script>w3.includeHTML();</script>
     <script src="./assets/js/script.js" defer></script>
-
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
