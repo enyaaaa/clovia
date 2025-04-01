@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Clovia</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body id="top">
+    <!-- HEADER -->
+    <header class="header" data-header>
+        <div w3-include-html="./assets/components/topnav.html"></div>
+    </header>
+
+    <main>
+        <article>
+            <!-- SHOP RESULTS -->
+            <section class="section shop" id="shop" aria-label="shop" data-section>
+                <div class="container">
+                    <div class="title-wrapper">
+                        <h2 class="h2 section-title">Search Results</h2>
+                    </div>
+                    <div class="container">
+                        <ul class="collection-list" id="productList"></ul>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="footer" data-section>
+        <div w3-include-html="./assets/components/footer.html"></div>
+    </footer>
+
+    <script>
+
+        // Function to get a cookie by name
+        function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                    return null;
+                }
+        
+                // Function to check if user is logged in
+                function isLoggedIn() {
+                    return !!getCookie('username'); // Returns true if 'username' cookie exists
+                }
+      document.addEventListener("DOMContentLoaded", () => {
+    // Get the search term from the query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('searchTerm');
+    if (searchTerm) {
+        fetchProducts(searchTerm);
+    }
+
+    function fetchProducts(searchTerm) {
+        fetch(`/clovia/search?searchTerm=${encodeURIComponent(searchTerm)}`)
+            .then(response => response.json())
+            .then(data => {
+                const productList = document.getElementById('productList');
+                productList.innerHTML = ''; // Clear existing list
+
+                data.forEach(product => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <div class="shop-card">
+                            <div class="card-banner img-holder" style="--width: 440; --height: 440;">
+                                <img src="${product.image}" width="440" height="440" loading="lazy" alt="${product.name}" class="img-cover">
+                            </div>
+                            <div class="card-content">
+                                <div class="price">
+                                    <span class="span">$${product.price}</span>
+                                </div>
+                                <h3>
+                                    <a href="#" class="card-title">${product.name}</a>
+                                </h3>
+                            </div>
+                        </div>
+                    `;
+                    productList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }
+});
+
+    </script>
+ <script src="https://www.w3schools.com/lib/w3.js"></script>
+ <script>
+     // to bring in other HTML on the fly into this page
+     w3.includeHTML();
+ </script>
+
+ <!-- Custom JS Link -->
+ <script src="./assets/js/script.js" defer></script>
+
+ <!-- Ionicon Link -->
+ <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+ <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+ <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>

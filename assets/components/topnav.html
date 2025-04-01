@@ -9,12 +9,15 @@
             <img src="./assets/images/logopic.png" width="80" height="80" alt="Clovia">
         </a>
 
-        <div class="input-wrapper">
-            <input type="search" name="search" placeholder="Search product" class="search-field">
-            <button class="search-submit" aria-label="search">
-                <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
-            </button>
-        </div>
+            <form id="searchForm" action="searchResults.html" method="GET">
+                <div class="input-wrapper">
+                    <input type="search" name="searchTerm" placeholder="Search product" class="search-field" id="searchField">
+                    <button type="submit" class="search-submit" aria-label="search">
+                        <ion-icon name="search-outline" aria-hidden="false"></ion-icon>
+                    </button>
+                </div>
+            </form>
+
         <div class="header-actions">
             <a href="login.html" class="header-action-btn" id="login-btn">
                 <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
@@ -31,6 +34,7 @@
                 <span class="btn-badge" id="cart-count">0</span>
             </button>
         </div>
+        
         <nav class="navbar" data-navbar>
             <ul class="navbar-list">
                 <li>
@@ -55,3 +59,4 @@
         </nav>
     </div>
 </div>
+
