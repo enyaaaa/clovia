@@ -26,14 +26,15 @@ public class ProfileDataServlet extends HttpServlet {
         String username = (String) session.getAttribute("username");
 
         try (Connection conn = DBConnection.getConnection()) {
-            String sql = "SELECT username, email, mobile, profilePic FROM user WHERE username = ?";
+            String sql = "SELECT id, username, email, mobile, profilePic FROM user WHERE username = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 String profileJson = String.format(
-                    "{\"username\":\"%s\",\"email\":\"%s\",\"mobile\":\"%s\",\"profilePic\":\"%s\"}",
+                    "{\"id\":\"%s\",\"username\":\"%s\",\"email\":\"%s\",\"mobile\":\"%s\",\"profilePic\":\"%s\"}",
+                    rs.getString("id"),
                     rs.getString("username"),
                     rs.getString("email"),
                     rs.getString("mobile"),

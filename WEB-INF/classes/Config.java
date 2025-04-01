@@ -10,6 +10,7 @@ public class Config {
 
     // User table and field names
     public static final String USER_TABLE = "user";
+    public static final String LOGIN_ID = "id";
     public static final String LOGIN_IDENTIFIER = "username"; // Login field (e.g., "username" or "email")
     public static final String PASSWORD_FIELD = "password";
     public static final String EMAIL_FIELD = "email";

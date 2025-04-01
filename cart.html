@@ -326,24 +326,24 @@
                     const cartItem = document.createElement('div');
                     cartItem.classList.add('cart-item');
                     cartItem.innerHTML = `
-                        <div class="cart-item-img">
-                            <div class="img-holder" style="--width: 100; --height: 100;">
-                                <img src="${item.image}" alt="${item.name}" class="img-cover">
-                            </div>
-                        </div>
-                        <div class="cart-item-details">
-                            <h3 class="h3 card-title">${item.name}</h3>
-                            <p class="cart-item-price"><span class="span">$${item.price.toFixed(2)}</span></p>
-                            <div class="quantity-wrapper">
-                                <button class="quantity-btn decrease" data-index="${index}">-</button>
-                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
-                                <button class="quantity-btn increase" data-index="${index}">+</button>
-                            </div>
-                        </div>
-                        <button class="remove-btn" data-index="${index}">
-                            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-                        </button>
-                    `;
+                <div class="cart-item-img">
+                    <div class="img-holder" style="--width: 100; --height: 100;">
+                        <img src="${item.image}" alt="${item.name}" class="img-cover">
+                    </div>
+                </div>
+                <div class="cart-item-details">
+                    <h3 class="h3 card-title">${item.name}</h3>
+                    <p class="cart-item-price"><span class="span">$${item.price.toFixed(2)}</span></p>
+                    <div class="quantity-wrapper">
+                        <button class="quantity-btn decrease" data-index="${index}">-</button>
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
+                        <button class="quantity-btn increase" data-index="${index}">+</button>
+                    </div>
+                </div>
+                <button class="remove-btn" data-index="${index}">
+                    <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+                </button>
+            `;
                     cartItems.appendChild(cartItem);
                 });
             }
@@ -355,25 +355,26 @@
             const shipping = cart.length > 0 ? 5.00 : 0;
             const total = subtotal + shipping;
             cartSummary.innerHTML = `
-                <h3 class="h3">Order Summary</h3>
-                <div class="summary-item">
-                    <span>Subtotal</span>
-                    <span class="summary-value">$${subtotal.toFixed(2)}</span>
-                </div>
-                <div class="summary-item">
-                    <span>Shipping</span>
-                    <span class="summary-value">$${shipping.toFixed(2)}</span>
-                </div>
-                <div class="summary-item total">
-                    <span>Total</span>
-                    <span class="summary-value">$${total.toFixed(2)}</span>
-                </div>
-                <div class="cart-summary-actions">
-                    <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
-                    <a href="#" class="btn-link" onclick="history.back(); return false;">Continue Shopping</a>
-                </div>
-            `;
+        <h3 class="h3">Order Summary</h3>
+        <div class="summary-item">
+            <span>Subtotal</span>
+            <span class="summary-value">$${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-item">
+            <span>Shipping</span>
+            <span class="summary-value">$${shipping.toFixed(2)}</span>
+        </div>
+        <div class="summary-item total">
+            <span>Total</span>
+            <span class="summary-value">$${total.toFixed(2)}</span>
+        </div>
+        <div class="cart-summary-actions">
+            <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
+            <a href="#" class="btn-link" onclick="history.back(); return false;">Continue Shopping</a>
+        </div>
+    `;
 
+            // Quantity button listeners
             document.querySelectorAll('.quantity-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     const index = parseInt(button.getAttribute('data-index'));
@@ -390,6 +391,7 @@
                 });
             });
 
+            // Remove button listeners
             document.querySelectorAll('.remove-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     const index = parseInt(button.getAttribute('data-index'));
@@ -399,6 +401,14 @@
                     updateCart();
                 });
             });
+
+            // Checkout button listener
+            const checkoutBtn = document.querySelector('.checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', () => {
+                    window.location.href = 'checkout.html'; // Redirect to checkout page
+                });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
