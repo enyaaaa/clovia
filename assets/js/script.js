@@ -78,20 +78,20 @@ function initializeNavigation() {
     const profileLink = document.getElementById('profile-btn');
     const loginLink = document.getElementById('login-btn');
     const cartBtn = document.getElementById('cart-btn');
-    const favBtn = document.getElementById('fav-btn');
+    const hisBtn = document.getElementById('his-btn');
 
     if (username) {
         // User is logged in
         if (profileLink) profileLink.style.display = 'inline-block';
         if (loginLink) loginLink.style.display = 'none';
         if (cartBtn) cartBtn.style.display = 'inline-block';
-        if (favBtn) favBtn.style.display = 'inline-block';
+        if (hisBtn) hisBtn.style.display = 'inline-block';
     } else {
         // User is not logged in
         if (profileLink) profileLink.style.display = 'none';
         if (loginLink) loginLink.style.display = 'inline-block';
         if (cartBtn) cartBtn.style.display = 'none';
-        if (favBtn) favBtn.style.display = 'none';
+        if (hisBtn) hisBtn.style.display = 'none';
     }
 
     // Update cart badge count
@@ -113,6 +113,16 @@ function initializeNavigation() {
                 return;
             }
             window.location.href = 'cart.html';
+        });
+    }
+
+    if (hisBtn) {
+        hisBtn.addEventListener('click', () => {
+            if (!isLoggedIn()) {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            window.location.href = 'history.html';
         });
     }
 

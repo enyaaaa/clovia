@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clovia - Checkout</title>
+    <title>Clovia</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" as="image" href="./assets/images/logopic.png">
@@ -16,7 +16,8 @@
     <!-- Google Fonts Link -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <style>
         .checkout {
@@ -218,10 +219,11 @@
                     <div class="checkout-wrapper">
                         <div class="checkout-form">
                             <h3>Shipping Information</h3>
-                            <form id="checkoutForm">
+                            <form id="checkoutForm" action="clovia/confirmOrder" method="POST">
                                 <div class="form-group">
                                     <label for="address">Shipping Address</label>
-                                    <input type="text" id="address" name="address" required placeholder="Enter full address">
+                                    <input type="text" id="address" name="address" required
+                                        placeholder="Enter full address">
                                 </div>
                                 <div class="form-group">
                                     <label for="payment">Payment Method</label>
@@ -232,6 +234,7 @@
                                         <option value="cash">Cash on Delivery</option>
                                     </select>
                                 </div>
+                                <input type="hidden" id="cartData" name="cartData">
                             </form>
                         </div>
                         <div>
@@ -258,10 +261,20 @@
     <!-- Checkout Script -->
     <script>
         function updateCheckoutPage() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cart = [];
+            try {
+                cart = JSON.parse(localStorage.getItem('cart')) || [];
+            } catch (e) {
+                console.error('Error parsing cart data:', e);
+                cart = [];
+            }
+
             const orderPreview = document.getElementById('orderPreview');
             const orderSummary = document.getElementById('orderSummary');
             let subtotal = 0;
+
+            // Log the cart items to the console
+            console.log('Cart items:', cart);
 
             // Order Preview
             orderPreview.innerHTML = '<h3>Order Preview</h3>';
@@ -272,19 +285,19 @@
                     const itemTotal = item.price * item.quantity;
                     subtotal += itemTotal;
                     orderPreview.innerHTML += `
-                        <div class="preview-item">
-                            <div class="preview-item-img">
-                                <div class="img-holder">
-                                    <img src="${item.image}" alt="${item.name}" class="img-cover">
-                                </div>
-                            </div>
-                            <div class="preview-item-details">
-                                <span>${item.name}</span>
-                                <span>Qty: ${item.quantity}</span>
-                            </div>
-                            <span class="preview-item-total">$${itemTotal.toFixed(2)}</span>
+                <div class="preview-item">
+                    <div class="preview-item-img">
+                        <div class="img-holder">
+                            <img src="${item.image}" alt="${item.name}" class="img-cover">
                         </div>
-                    `;
+                    </div>
+                    <div class="preview-item-details">
+                        <span>${item.name}</span>
+                        <span>Qty: ${item.quantity}</span>
+                    </div>
+                    <span class="preview-item-total">$${itemTotal.toFixed(2)}</span>
+                </div>
+            `;
                 });
             }
 
@@ -292,20 +305,20 @@
             const shipping = cart.length > 0 ? 5.00 : 0;
             const total = subtotal + shipping;
             orderSummary.innerHTML = `
-                <h3>Order Summary</h3>
-                <div class="summary-item">
-                    <span>Subtotal</span>
-                    <span>$${subtotal.toFixed(2)}</span>
-                </div>
-                <div class="summary-item">
-                    <span>Shipping</span>
-                    <span>$${shipping.toFixed(2)}</span>
-                </div>
-                <div class="summary-item total">
-                    <span>Total</span>
-                    <span>$${total.toFixed(2)}</span>
-                </div>
-            `;
+        <h3>Order Summary</h3>
+        <div class="summary-item">
+            <span>Subtotal</span>
+            <span>$${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-item">
+            <span>Shipping</span>
+            <span>$${shipping.toFixed(2)}</span>
+        </div>
+        <div class="summary-item total">
+            <span>Total</span>
+            <span>$${total.toFixed(2)}</span>
+        </div>
+    `;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -313,12 +326,18 @@
 
             const placeOrderBtn = document.getElementById('placeOrderBtn');
             const checkoutForm = document.getElementById('checkoutForm');
+            const cartDataInput = document.getElementById('cartData');
 
-            placeOrderBtn.addEventListener('click', () => {
+            placeOrderBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                cartDataInput.value = JSON.stringify(cart);
                 if (checkoutForm.checkValidity()) {
-                    alert('Order placed successfully!');
-                    localStorage.removeItem('cart'); // Clear cart after order
-                    window.location.href = 'home.html'; // Redirect to homepage
+                    // Dynamically set the action with context path
+                    checkoutForm.action = window.location.pathname.split('/').slice(0, -1).join('/') + '/confirmOrder';
+                    checkoutForm.submit();
+                    alert('Thank you for your purchase! Your order has been successfully placed.');
+                    localStorage.removeItem('cart');
                 } else {
                     alert('Please fill out all required fields.');
                 }
@@ -337,7 +356,7 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 </body>
 

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jakarta.servlet.ServletException;
@@ -27,125 +29,175 @@ public class ConfirmOrderServlet extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("ConfirmOrderServlet doPost - Method entered");
         HttpSession session = request.getSession(false);
+        System.out.println("Session: " + (session != null ? session.getId() : "null"));
+        if (session != null) {
+            System.out.println("Session Creation Time: " + new java.util.Date(session.getCreationTime()));
+            System.out.println("Session Last Accessed Time: " + new java.util.Date(session.getLastAccessedTime()));
+            System.out.println("Session Max Inactive Interval: " + session.getMaxInactiveInterval() + " seconds");
+            System.out.println("All Session Attributes: ");
+            java.util.Enumeration<String> attributeNames = session.getAttributeNames();
+            while (attributeNames.hasMoreElements()) {
+                String name = attributeNames.nextElement();
+                System.out.println("  " + name + ": " + session.getAttribute(name));
+            }
+        }
+        System.out.println("LOGIN_IDENTIFIER (" + Config.LOGIN_IDENTIFIER + "): " + (session != null ? session.getAttribute(Config.LOGIN_IDENTIFIER) : "no session"));
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        // Check if the user is logged in
-        if (session == null || session.getAttribute(Config.LOGIN_ID) == null) {
-            response.sendRedirect(Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Please log in to confirm your order");
+        if (session == null || session.getAttribute(Config.LOGIN_IDENTIFIER) == null) {
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Please log in to confirm your order");
             return;
         }
 
-        // Get the user ID from the session (assuming LOGIN_IDENTIFIER stores the user ID)
-        String userId = (String) session.getAttribute(Config.LOGIN_ID);
-        System.out.println("ConfirmOrderServlet doPost - User ID: " + userId);
+        String username = (String) session.getAttribute(Config.LOGIN_IDENTIFIER);
+        System.out.println("ConfirmOrderServlet doPost - Username: " + username);
 
-        // Get the cart and quantities from the session
-        @SuppressWarnings("unchecked")
-        List<String> cart = (List<String>) session.getAttribute(Config.CART_ITEMS);
-        @SuppressWarnings("unchecked")
-        Map<String, Integer> quantities = (Map<String, Integer>) session.getAttribute(Config.CART_QUANTITIES);
-
-        System.out.println("ConfirmOrderServlet doPost - Cart: " + cart);
-        System.out.println("ConfirmOrderServlet doPost - Quantities: " + quantities);
-
-        // Check if the cart is empty
-        if (cart == null || cart.isEmpty()) {
-            response.sendRedirect(Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Your cart is empty");
+        // Retrieve userId from the database using the username
+        int userId = -1; // Default value to indicate failure
+        try (Connection conn = DBConnection.getConnection()) {
+            String userSql = "SELECT id FROM user WHERE username = ?";
+            PreparedStatement userStmt = conn.prepareStatement(userSql);
+            userStmt.setString(1, username);
+            try (var rs = userStmt.executeQuery()) {
+                if (rs.next()) {
+                    userId = rs.getInt("id");
+                    System.out.println("ConfirmOrderServlet doPost - Retrieved User ID: " + userId);
+                } else {
+                    System.out.println("ConfirmOrderServlet doPost - User not found for username: " + username);
+                    String contextPath = request.getContextPath();
+                    response.sendRedirect(contextPath + "/" + Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=User not found");
+                    return;
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("ConfirmOrderServlet doPost - Error retrieving user ID: " + ex.getMessage());
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.LOGIN_PAGE + "?" + Config.ERROR_PARAM + "=Error retrieving user data");
             return;
         }
 
-        // Remove any invalid product IDs
-        cart.removeIf(id -> id == null || id.trim().isEmpty());
-        if (cart.isEmpty()) {
-            response.sendRedirect(Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Your cart contained invalid items");
-            return;
-        }
-
-        // Get the address from the request (assuming it's passed in the form)
         String address = request.getParameter("address");
-        if (address == null || address.trim().isEmpty()) {
-            response.sendRedirect(Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Please provide a valid address");
+        String method = request.getParameter("payment");
+        String cartData = request.getParameter("cartData");
+
+        if (address == null || address.trim().isEmpty() || method == null || cartData == null || cartData.trim().isEmpty()) {
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Missing required fields");
+            return;
+        }
+
+        List<Map<String, Object>> cart = new ArrayList<>();
+        try {
+            String json = cartData.trim();
+            if (json.startsWith("[") && json.endsWith("]")) {
+                json = json.substring(1, json.length() - 1);
+                String[] items = json.split("},\\s*\\{");
+                for (String item : items) {
+                    item = item.replace("{", "").replace("}", "").replace("\"", "");
+                    String[] pairs = item.split(",");
+                    Map<String, Object> map = new HashMap<>();
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split(":");
+                        if (keyValue.length == 2) {
+                            map.put(keyValue[0].trim(), keyValue[1].trim());
+                        }
+                    }
+                    cart.add(map);
+                }
+            }
+            System.out.println("ConfirmOrderServlet doPost - Cart parsed manually: " + cart);
+        } catch (Exception e) {
+            System.out.println("ConfirmOrderServlet doPost - Error parsing cart data: " + e.getMessage());
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Invalid cart data");
+            return;
+        }
+
+        if (cart.isEmpty()) {
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Your cart is empty");
             return;
         }
 
         Connection conn = null;
-        PreparedStatement pstmt = null;
+        PreparedStatement orderStmt = null;
+        PreparedStatement orderItemStmt = null;
         try {
             conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false);
 
-            // SQL to insert into the orders table
-            String sql = "INSERT INTO orders (userId, productId, quantity, address, amount, created_at, modified_at) " +
-                         "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(sql);
-
-            // Calculate the total amount for each product and insert into the orders table
-            double grandTotal = 0;
-            String productSql = "SELECT " + Config.PRODUCT_PRICE_FIELD + " FROM " + Config.PRODUCTS_TABLE +
-                               " WHERE " + Config.PRODUCT_ID_FIELD + " = ?";
-            PreparedStatement productStmt = conn.prepareStatement(productSql);
+            String orderSql = "INSERT INTO `order` (id, userId, address, method, amount, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+            orderStmt = conn.prepareStatement(orderSql);
+            int orderId = generateUniqueOrderId(conn);
+            double totalAmount = 0;
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
-            for (String productId : cart) {
-                // Get the product price
+            String productSql = "SELECT price FROM product WHERE id = ?";
+            PreparedStatement productStmt = conn.prepareStatement(productSql);
+            for (Map<String, Object> item : cart) {
+                String productId = String.valueOf(item.get("id"));
+                int quantity = Integer.parseInt(String.valueOf(item.get("quantity")));
                 productStmt.setString(1, productId);
-                double price = 0;
                 try (var rs = productStmt.executeQuery()) {
                     if (rs.next()) {
-                        price = rs.getDouble(Config.PRODUCT_PRICE_FIELD);
+                        totalAmount += rs.getDouble("price") * quantity;
+                    } else {
+                        throw new SQLException("Product ID " + productId + " not found");
                     }
                 }
-
-                int quantity = quantities.getOrDefault(productId, 0);
-                double amount = price * quantity;
-                grandTotal += amount;
-
-                // Set parameters for the order insertion
-                pstmt.setString(1, userId);
-                pstmt.setString(2, productId);
-                pstmt.setInt(3, quantity);
-                pstmt.setString(4, address);
-                pstmt.setDouble(5, amount);
-                pstmt.setTimestamp(6, now);
-                pstmt.setTimestamp(7, now);
-
-                pstmt.addBatch();
             }
 
-            // Execute the batch insert
-            pstmt.executeBatch();
+            orderStmt.setInt(1, orderId);
+            orderStmt.setInt(2, userId); // Use the retrieved userId (integer)
+            orderStmt.setString(3, address);
+            orderStmt.setString(4, method);
+            orderStmt.setDouble(5, totalAmount);
+            orderStmt.setTimestamp(6, now);
+            orderStmt.executeUpdate();
+            System.out.println("ConfirmOrderServlet doPost - Order inserted with ID: " + orderId);
+
+            String orderItemSql = "INSERT INTO orderItem (id, orderId, productId, quantity) VALUES (?, ?, ?, ?)";
+            orderItemStmt = conn.prepareStatement(orderItemSql);
+            int orderItemId = generateUniqueOrderItemId(conn);
+            for (Map<String, Object> item : cart) {
+                String productId = String.valueOf(item.get("id"));
+                int quantity = Integer.parseInt(String.valueOf(item.get("quantity")));
+                orderItemStmt.setInt(1, orderItemId++);
+                orderItemStmt.setInt(2, orderId);
+                orderItemStmt.setString(3, productId);
+                orderItemStmt.setInt(4, quantity);
+                orderItemStmt.addBatch();
+            }
+            orderItemStmt.executeBatch();
+            System.out.println("ConfirmOrderServlet doPost - Order items inserted");
+
             conn.commit();
-            System.out.println("ConfirmOrderServlet doPost - Order successfully placed for user: " + userId);
 
-            // Clear the cart after successful order placement
-            cart.clear();
-            quantities.clear();
-            session.setAttribute(Config.CART_ITEMS, cart);
-            session.setAttribute(Config.CART_QUANTITIES, quantities);
-
-            // Update the cart count cookie
             Cookie cartCountCookie = new Cookie("cartCount", "0");
             cartCountCookie.setMaxAge(3600);
             response.addCookie(cartCountCookie);
 
-            // Redirect to a success page
-            response.sendRedirect(Config.HOME_PAGE + "?" + Config.SUCCESS_PARAM + "=Order placed successfully! Total: $" + String.format("%.2f", grandTotal));
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.HOME_PAGE + "?" + Config.SUCCESS_PARAM + "=Order placed successfully! Total: $" + String.format("%.2f", totalAmount));
 
         } catch (SQLException ex) {
-            try {
-                if (conn != null) {
-                    conn.rollback(); // Rollback on error
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("ConfirmOrderServlet doPost - Transaction rolled back");
+                } catch (SQLException rollbackEx) {
+                    System.out.println("ConfirmOrderServlet doPost - Rollback failed: " + rollbackEx.getMessage());
                 }
-            } catch (SQLException rollbackEx) {
-                System.out.println("ConfirmOrderServlet doPost - Rollback failed: " + rollbackEx.getMessage());
             }
             System.out.println("ConfirmOrderServlet doPost - SQL Error: " + ex.getMessage());
-            response.sendRedirect(Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Error placing order: " + ex.getMessage());
-
+            String contextPath = request.getContextPath();
+            response.sendRedirect(contextPath + "/" + Config.CART_PAGE + "?" + Config.ERROR_PARAM + "=Error placing order: " + ex.getMessage());
         } finally {
             try {
-                if (pstmt != null) pstmt.close();
+                if (orderStmt != null) orderStmt.close();
+                if (orderItemStmt != null) orderItemStmt.close();
                 if (conn != null) conn.close();
             } catch (SQLException ex) {
                 System.out.println("ConfirmOrderServlet doPost - Error closing resources: " + ex.getMessage());
@@ -156,6 +208,29 @@ public class ConfirmOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(Config.CART_PAGE); // Redirect GET requests to the cart page
+        String contextPath = request.getContextPath();
+        response.sendRedirect(contextPath + "/" + Config.CART_PAGE);
+    }
+
+    private int generateUniqueOrderId(Connection conn) throws SQLException {
+        String sql = "SELECT MAX(id) FROM `order`";
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             var rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+            return 1;
+        }
+    }
+
+    private int generateUniqueOrderItemId(Connection conn) throws SQLException {
+        String sql = "SELECT MAX(id) FROM orderItem";
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             var rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+            return 1;
+        }
     }
 }
