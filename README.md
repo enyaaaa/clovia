@@ -46,8 +46,12 @@ install sql and tomcat
 update servlets
 
 classes - open in integrated terminal
+
 javac -cp ../../../../lib/servlet-api.jar *.java
 
-run program 
-cd ~/myWebProject/tomcat/bin
+
+run program
+
+cd ~/myWebProject/tomcat/
+
 ./catalina.sh run
