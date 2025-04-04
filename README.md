@@ -43,15 +43,10 @@ This project was done for IM2073 - Intro to Design & Project (web programming mo
 # Instuctions
 install sql and tomcat
 
-update servlets
+- <b>update servlets</b>
+  - classes - open in integrated terminal
+  - javac -cp ../../../../lib/servlet-api.jar *.java
 
-classes - open in integrated terminal
-
-javac -cp ../../../../lib/servlet-api.jar *.java
-
-
-run program
-
-cd ~/myWebProject/tomcat/
-
-./catalina.sh run
+- <b>run program</b>
+  - cd ~/myWebProject/tomcat/
+  - ./catalina.sh run
