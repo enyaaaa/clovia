@@ -1,7 +1,7 @@
-# clovia
+<img width="1049" height="776" alt="image" src="https://github.com/user-attachments/assets/bbe73e7b-a523-4797-ad2a-92066126a359" /># clovia
 <img src="https://github.com/enyaaaa/clovia/blob/main/assets/images/logopic.png?raw=true" width="200" height="200">
 
-Clovia is an e-commerce jewelry website that offers elegant, high-quality pieces for every occasion. 
+Clovia is an e-commerce jewellery website that offers elegant, high-quality pieces for every occasion. 
 This project was done for IM2073 - Intro to Design & Project (web programming module).
 
 # features
